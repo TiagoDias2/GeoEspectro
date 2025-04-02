@@ -14,5 +14,9 @@
         /// Nome das categorias dos artigos
         /// </summary>
         public string Categoria { get; set; }
+        /// <summary>
+        /// Lista dos artigos associados ás categorias
+        /// </summary>
+        public ICollection<Artigos> ListaArtigos { get; set; }
     }
 }

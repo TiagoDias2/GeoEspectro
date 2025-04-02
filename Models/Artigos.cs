@@ -1,4 +1,7 @@
-﻿namespace GeoEspectro.Models
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GeoEspectro.Models
 {
     public class Artigos
     {
@@ -22,5 +25,15 @@
         /// Data de publicação do artigo
         /// </summary>
         public DateTime Data { get; set; }
+
+        /// <summary>
+        /// ForeignKey para a Tabela das Categorias
+        /// </summary>
+        [ForeignKey(nameof(Categoria))]
+        public int CategoriaFK { get; set; }
+        /// <summary>
+        /// ForeignKey para as Categorias
+        /// </summary>
+        public Categorias Categoria { get; set; }
     }
 }
