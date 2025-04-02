@@ -40,5 +40,10 @@
         /// Número do dispositivo protátil do Utilizador
         /// </summary>
         public string Telemovel { get; set; }
+
+        /// <summary>
+        /// Lista dos artigos do Utislizador
+        /// </summary>
+        public ICollection<Gostos> ListaGostos { get; set; }
     }
 }

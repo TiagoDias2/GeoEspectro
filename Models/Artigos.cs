@@ -35,5 +35,10 @@ namespace GeoEspectro.Models
         /// ForeignKey para as Categorias
         /// </summary>
         public Categorias Categoria { get; set; }
+
+        /// <summary>
+        /// Lista de todos os artigos
+        /// </summary>
+        public ICollection<Gostos> ListaGostos { get; set; }
     }
 }
