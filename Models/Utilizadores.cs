@@ -42,8 +42,13 @@
         public string Telemovel { get; set; }
 
         /// <summary>
-        /// Lista dos artigos do Utislizador
+        /// Lista dos artigos do Utilizador
         /// </summary>
         public ICollection<Gostos> ListaGostos { get; set; }
+
+        /// <summary>
+        /// Lista das bibliotecas do Utilizador
+        /// </summary>
+        public ICollection<Bibliotecas> ListaBibliotecas { get; set; }
     }
 }

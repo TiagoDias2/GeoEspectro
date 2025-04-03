@@ -40,5 +40,10 @@ namespace GeoEspectro.Models
         /// Lista de todos os artigos
         /// </summary>
         public ICollection<Gostos> ListaGostos { get; set; }
+
+        /// <summary>
+        /// Lista dos artigos que compõem as bibliotecas
+        /// </summary>
+        public ICollection<Bibliotecas> ListaBibliotecas { get; set; }
     }
 }

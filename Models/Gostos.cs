@@ -23,7 +23,6 @@ namespace GeoEspectro.Models
         /// <summary>
         /// ForeignKey para o artigo que o utilizador gostou
         /// </summary>
-
         [ForeignKey(nameof(Artigo))]
         public int ArtigoFK { get; set; }
    
