@@ -2,10 +2,10 @@
 
 namespace GeoEspectro.Models
 {
-    public class Bibliotecas
+    public class Recursos
     {
         /// <summary>
-        /// Identificador da Biblioteca
+        /// Identificador do Recurso
         /// </summary>
         public int Id { get; set; }
         /// <summary>
@@ -13,9 +13,21 @@ namespace GeoEspectro.Models
         /// </summary>
         public string Nome { get; set; }
         /// <summary>
-        /// Data de Publicação da Biblioteca
+        /// Data de Publicação dos Recursos
         /// </summary>
         public DateTime Data { get; set; }
+        /// <summary>
+        /// Tipo de Recursos Multimédia
+        /// </summary>
+        public string Tipo { get; set; }
+        /// <summary>
+        /// Local dos Recursos Multimédia
+        /// </summary>
+        public String Local { get; set; }
+        /// <summary>
+        /// Observações para os Recursos Multimédias
+        /// </summary>
+        public String Observação { get; set; }
 
         /// <summary>
         /// ForeignKey para o utilizador associado à biblioteca

@@ -47,8 +47,8 @@
         public ICollection<Gostos> ListaGostos { get; set; }
 
         /// <summary>
-        /// Lista das bibliotecas do Utilizador
+        /// Lista dos Recursos Multimédia do Utilizador
         /// </summary>
-        public ICollection<Bibliotecas> ListaBibliotecas { get; set; }
+        public ICollection<Recursos> ListaRecursos { get; set; }
     }
 }

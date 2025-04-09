@@ -26,15 +26,11 @@ namespace GeoEspectro.Models
         /// </summary>
         public DateTime Data { get; set; }
 
+ 
         /// <summary>
-        /// ForeignKey para a Tabela das Categorias
+        /// Lista de todas as categorias
         /// </summary>
-        [ForeignKey(nameof(Categoria))]
-        public int CategoriaFK { get; set; }
-        /// <summary>
-        /// ForeignKey para as Categorias
-        /// </summary>
-        public Categorias Categoria { get; set; }
+        public ICollection<Categorias> ListaCategorias { get; set; }
 
         /// <summary>
         /// Lista de todos os artigos
@@ -42,8 +38,8 @@ namespace GeoEspectro.Models
         public ICollection<Gostos> ListaGostos { get; set; }
 
         /// <summary>
-        /// Lista dos artigos que compõem as bibliotecas
+        /// Lista dos artigos que compõem os Recursos
         /// </summary>
-        public ICollection<Bibliotecas> ListaBibliotecas { get; set; }
+        public ICollection<Recursos> ListaRecursos { get; set; }
     }
 }
