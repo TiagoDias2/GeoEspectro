@@ -10,24 +10,24 @@ namespace GeoEspectro.Models
         public bool principal { get; set; }
 
         /// <summary>
-        /// ForeignKey para referenciar o utilizador ao recurso
+        /// ForeignKey para referenciar o artigos ao recuso
         /// </summary>
         [ForeignKey(nameof(Recurso))]
         public int RecursoFK { get; set; }
 
         /// <summary>
-        /// ForeignKey para referenciar o utilizador ao recurso
+        /// ForeignKey para referenciar o artigos ao recuso
         /// </summary>
         public Recursos Recurso { get; set; }
 
         /// <summary>
-        /// ForeignKey para o artigo que o utilizador gostou
+        /// ForeignKey para referenciar o recurso ao artigo
         /// </summary>
         [ForeignKey(nameof(Artigo))]
         public int ArtigoFK { get; set; }
 
         /// <summary>
-        /// ForeignKey para o artigo que o utilizador gostou
+        /// ForeignKey para referenciar o recurso ao artigo
         /// </summary>
         public Artigos Artigo { get; set; }
 
