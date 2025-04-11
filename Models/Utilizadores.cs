@@ -41,6 +41,8 @@
         /// </summary>
         public string Telemovel { get; set; }
 
+        // Relacionamentos M - N
+
         /// <summary>
         /// Lista dos artigos do Utilizador
         /// </summary>
@@ -50,5 +52,10 @@
         /// Lista dos Recursos Multimédia do Utilizador
         /// </summary>
         public ICollection<Recursos> ListaRecursos { get; set; }
+
+        /// <summary>
+        /// Lista de Artigos Associados a Utilizadores
+        /// </summary>
+        public ICollection<Artigos> ListaArtigos { get; set;}
     }
 }

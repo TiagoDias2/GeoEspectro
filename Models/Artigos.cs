@@ -26,7 +26,8 @@ namespace GeoEspectro.Models
         /// </summary>
         public DateTime Data { get; set; }
 
- 
+        // Relacionamentos M - N
+
         /// <summary>
         /// Lista de todas as categorias
         /// </summary>
@@ -41,5 +42,10 @@ namespace GeoEspectro.Models
         /// Lista dos artigos que compõem os Recursos
         /// </summary>
         public ICollection<Recursos> ListaRecursos { get; set; }
+
+        /// <summary>
+        /// Lista de utilizadores associados aos artigos
+        /// </summary>
+        public ICollection<Utilizadores> ListaUtilizados { get; set; }
     }
 }

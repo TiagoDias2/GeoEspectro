@@ -9,6 +9,8 @@ namespace GeoEspectro.Models
         /// </summary>
         public bool principal { get; set; }
 
+        // Relacionamento N - 1
+
         /// <summary>
         /// ForeignKey para referenciar o artigos ao recuso
         /// </summary>

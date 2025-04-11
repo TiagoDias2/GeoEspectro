@@ -9,6 +9,8 @@ namespace GeoEspectro.Models
         /// </summary>
         public DateTime Data { get; set; }
 
+        // Relacionamentos N - 1
+
         /// <summary>
         /// ForeignKey para referenciar o utilizador que gosta do artigo
         /// </summary>

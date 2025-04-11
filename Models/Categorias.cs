@@ -14,6 +14,9 @@
         /// Nome das categorias dos artigos
         /// </summary>
         public string Categoria { get; set; }
+
+        // Relacionamento M - N
+
         /// <summary>
         /// Lista dos artigos associados ás categorias
         /// </summary>

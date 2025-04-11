@@ -29,6 +29,8 @@ namespace GeoEspectro.Models
         /// </summary>
         public String Observação { get; set; }
 
+        // Relacionamentos N - 1
+
         /// <summary>
         /// ForeignKey para o utilizador associado à biblioteca
         /// </summary>
@@ -39,6 +41,8 @@ namespace GeoEspectro.Models
         /// ForeignKey para o utilizador associado à biblioteca
         /// </summary>
         public Utilizadores Utilizador { get; set; }
+
+        // Relacionamento M - N
 
         /// <summary>
         /// Lista dos artigos que compõem as bibliotecas
