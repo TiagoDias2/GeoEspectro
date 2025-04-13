@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GeoEspectro.Models
 {
+    [PrimaryKey(nameof(RecursoFK), nameof(ArtigoFK))]
     public class Detalhes
     {
         /// <summary>

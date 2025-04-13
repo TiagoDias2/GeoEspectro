@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GeoEspectro.Models
 {
@@ -7,6 +8,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Identificador do Recurso
         /// </summary>
+        [Key]
         public int Id { get; set; }
         /// <summary>
         /// Nome da biblioteca

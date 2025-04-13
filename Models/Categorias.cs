@@ -1,4 +1,6 @@
-﻿namespace GeoEspectro.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GeoEspectro.Models
 {
     /// <summary>
     /// Categorias de filtragem para cada artigo
@@ -8,6 +10,7 @@
         /// <summary>
         /// Identificador da class das Categorias
         /// </summary>
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

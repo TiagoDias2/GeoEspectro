@@ -1,4 +1,6 @@
-﻿namespace GeoEspectro.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GeoEspectro.Models
 {
     /// <summary>
     /// Utilizadores não anonimos da aplicação 
@@ -9,6 +11,7 @@
         /// <summary>
         /// Identificador da class do utilizador
         /// </summary>
+        [Key]
         public int ID { get; set; }
 
         /// <summary>

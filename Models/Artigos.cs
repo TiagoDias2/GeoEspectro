@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GeoEspectro.Models
@@ -8,6 +9,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Numero de Identificação do Artigo 
         /// </summary>
+        [Key]
         public int Id { get; set; }
         /// <summary>
         /// Titulo do artigo
