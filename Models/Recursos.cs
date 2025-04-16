@@ -11,7 +11,7 @@ namespace GeoEspectro.Models
         [Key]
         public int Id { get; set; }
         /// <summary>
-        /// Nome da biblioteca
+        /// Nome do Recurso
         /// </summary>
         public string Nome { get; set; }
         /// <summary>
@@ -29,7 +29,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Observações para os Recursos Multimédias
         /// </summary>
-        public String Observação { get; set; }
+        public String Observacao { get; set; }
 
         // Relacionamentos N - 1
 
