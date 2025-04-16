@@ -14,6 +14,8 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Titulo do artigo
         /// </summary>
+        [Display(Name = "Título")]
+        [StringLength(120)]
         public string Titulo { get; set; }
         /// <summary>
         /// Fotografia associada ao artigo
@@ -26,6 +28,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Data de publicação do artigo
         /// </summary>
+        [Display(Name = "Data")]
         public DateTime Data { get; set; }
 
         // Relacionamentos M - N

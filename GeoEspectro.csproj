@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-GeoEspectro-dca5e8e2-23fb-499d-bf65-b3c3d5f9499b</UserSecretsId>
   </PropertyGroup>
