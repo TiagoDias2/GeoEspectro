@@ -114,7 +114,7 @@ namespace GeoEspectro.Controllers
                 using var stream = new FileStream(
                     nomeImagem, FileMode.Create
                     );
-                await stream.CopyToAsync( stream );
+                await imagemFoto.CopyToAsync( stream );
 
                 return RedirectToAction(nameof(Index));
             }
