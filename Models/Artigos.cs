@@ -31,13 +31,26 @@ namespace GeoEspectro.Models
         [Display(Name = "Data")]
         public DateTime Data { get; set; }
 
+        // Relacionamento 1 - N
+
+        /// <summary>
+        /// ForeignKey para o utilizador associado ao artigo
+        /// </summary>
+        [ForeignKey(nameof(Utilizador))]
+        public int UtilizadorFK { get; set; }
+
+        /// <summary>
+        /// ForeignKey para o utilizador associado ao artigo
+        /// </summary>
+        public Utilizadores Utilizador {  get; set; }
+
         // Relacionamentos M - N
 
         /// <summary>
         /// Lista de todas as categorias
         /// </summary>
         public ICollection<Categorias> ListaCategorias { get; set; }
-
+            
         /// <summary>
         /// Lista de todos os artigos
         /// </summary>
@@ -47,10 +60,5 @@ namespace GeoEspectro.Models
         /// Lista dos artigos que compõem os Recursos
         /// </summary>
         public ICollection<Recursos> ListaRecursos { get; set; }
-
-        /// <summary>
-        /// Lista de utilizadores associados aos artigos
-        /// </summary>
-        public ICollection<Utilizadores> ListaUtilizados { get; set; }
     }
 }
