@@ -16,6 +16,9 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Nome das categorias dos artigos
         /// </summary>
+        [Required(ErrorMessage = "A {0} é de preenchimento obrigatório")]
+        [StringLength(20)]
+        [Display(Name = "Categoria")]
         public string Categoria { get; set; }
 
         // Relacionamento M - N
