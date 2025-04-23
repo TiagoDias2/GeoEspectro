@@ -13,7 +13,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Nome do Recurso
         /// </summary>
-        public string Nome { get; set; }
+        public string Nome { get; set; } = "";
         /// <summary>
         /// Data de Publicação dos Recursos
         /// </summary>

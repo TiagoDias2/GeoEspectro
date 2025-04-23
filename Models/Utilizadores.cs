@@ -17,12 +17,12 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Nome do Utilizador
         /// </summary>
-        public string Nome { get; set; }
+        public string Nome { get; set; } = "";
 
         /// <summary>
         /// Morada do Utilizador
         /// </summary>
-        public string Morada { get; set; }
+        public string Morada { get; set; } = "";
 
         /// <summary>
         /// Código Postal do Utilizador

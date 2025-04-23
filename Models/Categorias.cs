@@ -16,7 +16,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Nome das categorias dos artigos
         /// </summary>
-        public string Categoria { get; set; }
+        public string Categoria { get; set; } = "";
 
         // Relacionamento M - N
 
