@@ -16,7 +16,7 @@ namespace GeoEspectro.Models
         /// </summary>
         [Display(Name = "Título")]
         [StringLength(120)]
-        public string Titulo { get; set; }
+        public string Titulo { get; set; } = "";
         /// <summary>
         /// Fotografia associada ao artigo
         /// </summary>
@@ -24,7 +24,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Conteudo do artigo
         /// </summary>
-        public string Texto { get; set; }
+        public string Texto { get; set; } = "";
         /// <summary>
         /// Data de publicação do artigo
         /// </summary>
