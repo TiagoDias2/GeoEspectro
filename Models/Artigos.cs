@@ -42,7 +42,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// ForeignKey para o utilizador associado ao artigo
         /// </summary>
-        public Utilizadores Utilizador {  get; set; }
+        public Utilizadores Utilizador { get; set; }
 
         // Relacionamentos M - N
 
@@ -60,5 +60,7 @@ namespace GeoEspectro.Models
         /// Lista dos artigos que compõem os Recursos
         /// </summary>
         public ICollection<Recursos> ListaRecursos { get; set; }
+
+        //public ICollection<Utilizadores> ListaUtilizadores { get; set; }
     }
 }

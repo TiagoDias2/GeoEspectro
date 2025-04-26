@@ -11,7 +11,11 @@ public class ApplicationDbContext : IdentityDbContext
     {
     }
 
-public DbSet<GeoEspectro.Models.Recursos> Recursos { get; set; } = default!;
+    public DbSet<Recursos> Recursos { get; set; }
 
-public DbSet<GeoEspectro.Models.Artigos> Artigos { get; set; } = default!;
+    public DbSet<Artigos> Artigos { get; set; }
+
+    public DbSet<Utilizadores> Utilizadores { get; set; }
+
+    public DbSet<Categorias> Categorias { get; set; }
 }

@@ -49,6 +49,8 @@ namespace GeoEspectro.Controllers
         // GET: Artigos/Create
         public IActionResult Create()
         {
+            ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "Id", "Nome");
+            ViewData["ListaCategorias"] = new SelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria");
             return View();
         }
 
@@ -57,7 +59,7 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Titulo,Fotografia,Texto,Data")] Artigos artigo,
+        public async Task<IActionResult> Create([Bind("Titulo,Fotografia,Texto,Data, UtilizadorFK, ListaCategorias")] Artigos artigo,
             IFormFile imagemFoto)
         {
             // vars auxiliares
@@ -118,6 +120,9 @@ namespace GeoEspectro.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "Id", "Nome");
+            ViewData["ListaCategorias"] = new SelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria");
+
             return View(artigo);
         }
 
