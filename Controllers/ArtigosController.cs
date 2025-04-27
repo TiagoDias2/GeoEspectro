@@ -66,7 +66,32 @@ namespace GeoEspectro.Controllers
             bool haErro = false;
             string nomeImagem = "";
 
-            if(imagemFoto == null)
+            if(artigo.UtilizadorFK <= 0)
+            {
+                // não há imagem
+                haErro = true;
+                // crio msg de erro
+                ModelState.AddModelError("", "Tem de escolher um utilizador");
+            }
+            else
+            {
+                var utilizadorExiste = await _context.Utilizadores.AnyAsync(u => u.ID == artigo.UtilizadorFK);
+                if (!utilizadorExiste)
+                {
+                    haErro = true;
+                    ModelState.AddModelError("", "O utilizador selecionado não existe.");
+                }
+            }
+
+            if (artigo.ListaCategorias == null || artigo.ListaCategorias.Count == 0)
+            {
+                // não há imagem
+                haErro = true;
+                // crio msg de erro
+                ModelState.AddModelError("", "Tem de escolher um utilizador");
+            }
+
+            if (imagemFoto == null)
             {
                 // não há imagem
                 haErro = true;
