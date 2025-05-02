@@ -59,7 +59,7 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Titulo,Fotografia,Texto,Data, UtilizadorFK, ListaCategorias")] Artigos artigo,
+        public async Task<IActionResult> Create([Bind("Titulo,Fotografia,Texto, UtilizadorFK, ListaCategorias")] Artigos artigo,
             IFormFile imagemFoto)
         {
             // vars auxiliares
@@ -128,6 +128,8 @@ namespace GeoEspectro.Controllers
             // Avalia se os dados estão de acordo com o Model
             if (ModelState.IsValid && !haErro)
             {
+                artigo.Data = DateTime.Now;
+
                 _context.Add(artigo);
                 await _context.SaveChangesAsync();
 
