@@ -23,32 +23,38 @@ namespace GeoEspectro.Models
         /// </summary>
         public string Tipo { get; set; }
         /// <summary>
-        /// Local dos Recursos Multimédia
+        /// Local retratado pelo Recurso Multimédia
         /// </summary>
-        public String Local { get; set; }
+        public string Local { get; set; }
+
+        /// <summary>
+        /// Documento com o Recurso
+        /// </summary>
+        public string Ficheiro { get; set; }
+
         /// <summary>
         /// Observações para os Recursos Multimédias
         /// </summary>
-        public String Observacao { get; set; }
+        public string? Observacao { get; set; }
 
         // Relacionamentos N - 1
 
         /// <summary>
-        /// ForeignKey para o utilizador associado à biblioteca
+        /// ForeignKey para o Autor do Recurso Multimédia
         /// </summary>
-        [ForeignKey(nameof(Utilizador))]
-        public int UtilizadorFK { get; set; }
+        [ForeignKey(nameof(Autor))]
+        public int AutorFK { get; set; }
 
         /// <summary>
-        /// ForeignKey para o utilizador associado à biblioteca
+        /// ForeignKey para o Autor do Recurso Multimédia
         /// </summary>
-        public Utilizadores Utilizador { get; set; }
+        public Utilizadores Autor { get; set; } = null!;
 
         // Relacionamento M - N
 
         /// <summary>
-        /// Lista dos artigos que compõem as bibliotecas
+        /// Lista de Detalhes dos Recursos Multimédia 
         /// </summary>
-        public ICollection<Artigos> ListaArtigos { get; set; }
+        public ICollection<Detalhes> ListaArtigos { get; set; } = [];
     }
 }

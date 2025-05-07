@@ -10,23 +10,22 @@ using GeoEspectro.Models;
 
 namespace GeoEspectro.Controllers
 {
-    public class RecursosController : Controller
+    public class UtilizadoresController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public RecursosController(ApplicationDbContext context)
+        public UtilizadoresController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Recursos
+        // GET: Utilizadores
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Recursos.Include(r => r.Autor);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await _context.Utilizadores.ToListAsync());
         }
 
-        // GET: Recursos/Details/5
+        // GET: Utilizadores/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,42 +33,39 @@ namespace GeoEspectro.Controllers
                 return NotFound();
             }
 
-            var recursos = await _context.Recursos
-                .Include(r => r.Autor)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (recursos == null)
+            var utilizadores = await _context.Utilizadores
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (utilizadores == null)
             {
                 return NotFound();
             }
 
-            return View(recursos);
+            return View(utilizadores);
         }
 
-        // GET: Recursos/Create
+        // GET: Utilizadores/Create
         public IActionResult Create()
         {
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID");
             return View();
         }
 
-        // POST: Recursos/Create
+        // POST: Utilizadores/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Data,Tipo,Local,Observação,UtilizadorFK")] Recursos recursos)
+        public async Task<IActionResult> Create([Bind("ID,Nome,Morada,CodPostal,Pais,Nif,Telemovel")] Utilizadores utilizadores)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(recursos);
+                _context.Add(utilizadores);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.AutorFK);
-            return View(recursos);
+            return View(utilizadores);
         }
 
-        // GET: Recursos/Edit/5
+        // GET: Utilizadores/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +73,22 @@ namespace GeoEspectro.Controllers
                 return NotFound();
             }
 
-            var recursos = await _context.Recursos.FindAsync(id);
-            if (recursos == null)
+            var utilizadores = await _context.Utilizadores.FindAsync(id);
+            if (utilizadores == null)
             {
                 return NotFound();
             }
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.AutorFK);
-            return View(recursos);
+            return View(utilizadores);
         }
 
-        // POST: Recursos/Edit/5
+        // POST: Utilizadores/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Data,Tipo,Local,Observação,UtilizadorFK")] Recursos recursos)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Nome,Morada,CodPostal,Pais,Nif,Telemovel")] Utilizadores utilizadores)
         {
-            if (id != recursos.Id)
+            if (id != utilizadores.ID)
             {
                 return NotFound();
             }
@@ -102,12 +97,12 @@ namespace GeoEspectro.Controllers
             {
                 try
                 {
-                    _context.Update(recursos);
+                    _context.Update(utilizadores);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RecursosExists(recursos.Id))
+                    if (!UtilizadoresExists(utilizadores.ID))
                     {
                         return NotFound();
                     }
@@ -118,11 +113,10 @@ namespace GeoEspectro.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.AutorFK);
-            return View(recursos);
+            return View(utilizadores);
         }
 
-        // GET: Recursos/Delete/5
+        // GET: Utilizadores/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,35 +124,34 @@ namespace GeoEspectro.Controllers
                 return NotFound();
             }
 
-            var recursos = await _context.Recursos
-                .Include(r => r.Autor)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (recursos == null)
+            var utilizadores = await _context.Utilizadores
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (utilizadores == null)
             {
                 return NotFound();
             }
 
-            return View(recursos);
+            return View(utilizadores);
         }
 
-        // POST: Recursos/Delete/5
+        // POST: Utilizadores/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var recursos = await _context.Recursos.FindAsync(id);
-            if (recursos != null)
+            var utilizadores = await _context.Utilizadores.FindAsync(id);
+            if (utilizadores != null)
             {
-                _context.Recursos.Remove(recursos);
+                _context.Utilizadores.Remove(utilizadores);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RecursosExists(int id)
+        private bool UtilizadoresExists(int id)
         {
-            return _context.Recursos.Any(e => e.Id == id);
+            return _context.Utilizadores.Any(e => e.ID == id);
         }
     }
 }

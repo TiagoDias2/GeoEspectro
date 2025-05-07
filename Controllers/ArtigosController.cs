@@ -49,8 +49,8 @@ namespace GeoEspectro.Controllers
         // GET: Artigos/Create
         public IActionResult Create()
         {
-            ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "Id", "Nome");
-            ViewData["ListaCategorias"] = new SelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria");
+            ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome");
+            ViewData["ListaCategorias"] = new MultiSelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria");
             return View();
         }
 
@@ -59,14 +59,14 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Titulo,Fotografia,Texto, UtilizadorFK, ListaCategorias")] Artigos artigo,
+        public async Task<IActionResult> Create([Bind("Titulo,Fotografia,Texto, UtilizadorFK, ListaCategoriasSelecionadas")] Artigos artigo,
             IFormFile imagemFoto)
         {
             // vars auxiliares
             bool haErro = false;
             string nomeImagem = "";
 
-            if(artigo.UtilizadorFK <= 0)
+            if(artigo.AutorFK <= 0)
             {
                 // não há imagem
                 haErro = true;
@@ -75,7 +75,7 @@ namespace GeoEspectro.Controllers
             }
             else
             {
-                var utilizadorExiste = await _context.Utilizadores.AnyAsync(u => u.ID == artigo.UtilizadorFK);
+                var utilizadorExiste = await _context.Utilizadores.AnyAsync(u => u.ID == artigo.AutorFK);
                 if (!utilizadorExiste)
                 {
                     haErro = true;
@@ -83,12 +83,18 @@ namespace GeoEspectro.Controllers
                 }
             }
 
-            if (artigo.ListaCategorias == null || artigo.ListaCategorias.Count == 0)
+            if (artigo.ListaCategoriasSelecionadas == null || !artigo.ListaCategoriasSelecionadas.Any())
             {
-                // não há imagem
+                // não escolheu categorias
                 haErro = true;
-                // crio msg de erro
-                ModelState.AddModelError("", "Tem de escolher um utilizador");
+                // apresenta mensagem de erro
+                ModelState.AddModelError("", "Tem de escolher pelo menos uma categoria.");
+            }
+            else
+            {
+                artigo.ListaCategorias = _context.Categorias
+                    .Where(c => artigo.ListaCategoriasSelecionadas.Contains(c.Id))
+                    .ToList();
             }
 
             if (imagemFoto == null)
@@ -148,7 +154,7 @@ namespace GeoEspectro.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "Id", "Nome");
-            ViewData["ListaCategorias"] = new SelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria");
+            ViewData["ListaCategorias"] = new MultiSelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria", artigo.ListaCategorias);
 
             return View(artigo);
         }
