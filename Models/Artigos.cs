@@ -11,16 +11,19 @@ namespace GeoEspectro.Models
         /// </summary>
         [Key]
         public int Id { get; set; }
+
         /// <summary>
         /// Titulo do artigo
         /// </summary>
         [Display(Name = "Título")]
         [StringLength(120)]
         public string Titulo { get; set; } = "";
+
         /// <summary>
-        /// Fotografia associada ao artigo
+        /// Fotografia associada ao artigo (Descarte)
         /// </summary>
         public string Fotografia { get; set; } = null!;
+
         /// <summary>
         /// Conteudo do artigo
         /// </summary>
@@ -34,15 +37,15 @@ namespace GeoEspectro.Models
         // Relacionamento 1 - N
 
         /// <summary>
-        /// ForeignKey para o utilizador associado ao artigo
+        /// ForeignKey para o autor do artigo
         /// </summary>
-        [ForeignKey(nameof(Utilizador))]
-        public int UtilizadorFK { get; set; }
+        [ForeignKey(nameof(Autor))]
+        public int AutorFK { get; set; }
 
         /// <summary>
-        /// ForeignKey para o utilizador associado ao artigo
+        /// ForeignKey para o autor do artigo
         /// </summary>
-        public Utilizadores Utilizador { get; set; } = null!;
+        public Utilizadores Autor { get; set; } = null!;
 
         // Relacionamentos M - N
 
@@ -51,15 +54,22 @@ namespace GeoEspectro.Models
         /// </summary>
         public ICollection<Categorias> ListaCategorias { get; set; } = [];
 
+
         /// <summary>
-        /// Lista de todos os artigos
+        /// Lista de categorias selecionadas
+        /// </summary>
+        [NotMapped]
+        public List<int> ListaCategoriasSelecionadas { get; set; } = new List<int>();
+
+        /// <summary>
+        /// Lista de Gostos associados a cada artigo
         /// </summary>
         public ICollection<Gostos> ListaGostos { get; set; } = [];
 
         /// <summary>
         /// Lista dos artigos que compõem os Recursos
         /// </summary>
-        public ICollection<Recursos> ListaRecursos { get; set; } = [];
+        public ICollection<Detalhes> ListaRecursos { get; set; } = [];
 
         //public ICollection<Utilizadores> ListaUtilizadores { get; set; }
     }

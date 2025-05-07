@@ -43,10 +43,10 @@
             @Html.ListBox("ListaCategorias", ViewData["ListaCategorias"] as SelectList, new { @class = "form-control", multiple = "multiple" })
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Utilizador)
+            @Html.DisplayNameFor(model => model.Autor)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Utilizador.Nome)
+            @Html.DisplayFor(model => model.Autor.Nome)
         </dd>
     </dl>
 </div>

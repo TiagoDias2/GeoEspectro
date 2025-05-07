@@ -22,7 +22,7 @@ namespace GeoEspectro.Controllers
         // GET: Recursos
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Recursos.Include(r => r.Utilizador);
+            var applicationDbContext = _context.Recursos.Include(r => r.Autor);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace GeoEspectro.Controllers
             }
 
             var recursos = await _context.Recursos
-                .Include(r => r.Utilizador)
+                .Include(r => r.Autor)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (recursos == null)
             {
@@ -65,7 +65,7 @@ namespace GeoEspectro.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.UtilizadorFK);
+            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.AutorFK);
             return View(recursos);
         }
 
@@ -82,7 +82,7 @@ namespace GeoEspectro.Controllers
             {
                 return NotFound();
             }
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.UtilizadorFK);
+            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.AutorFK);
             return View(recursos);
         }
 
@@ -118,7 +118,7 @@ namespace GeoEspectro.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.UtilizadorFK);
+            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.AutorFK);
             return View(recursos);
         }
 
@@ -131,7 +131,7 @@ namespace GeoEspectro.Controllers
             }
 
             var recursos = await _context.Recursos
-                .Include(r => r.Utilizador)
+                .Include(r => r.Autor)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (recursos == null)
             {

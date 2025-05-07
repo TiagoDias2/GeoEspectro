@@ -37,7 +37,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Numero de Identificação Fiscal do Utilizador
         /// </summary>
-        public string Nif { get; set; }
+        public string NIF { get; set; }
 
         /// <summary>
         /// Número do dispositivo protátil do Utilizador

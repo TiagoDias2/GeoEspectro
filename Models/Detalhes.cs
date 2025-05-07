@@ -9,7 +9,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Detalhe Multimedia Principal
         /// </summary>
-        public bool principal { get; set; }
+        public bool Principal { get; set; }
 
         // Relacionamento N - 1
 
