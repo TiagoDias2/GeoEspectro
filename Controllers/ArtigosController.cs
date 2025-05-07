@@ -49,7 +49,7 @@ namespace GeoEspectro.Controllers
         // GET: Artigos/Create
         public IActionResult Create()
         {
-            ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "Id", "Nome");
+            ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome");
             ViewData["ListaCategorias"] = new SelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria");
             return View();
         }
@@ -148,7 +148,7 @@ namespace GeoEspectro.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "Id", "Nome");
-            ViewData["ListaCategorias"] = new SelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria");
+            ViewData["ListaCategorias"] = new SelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria", artigo.ListaCategorias);
 
             return View(artigo);
         }

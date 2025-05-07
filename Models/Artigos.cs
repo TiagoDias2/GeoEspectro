@@ -20,7 +20,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Fotografia associada ao artigo
         /// </summary>
-        public string Fotografia { get; set; }
+        public string Fotografia { get; set; } = null!;
         /// <summary>
         /// Conteudo do artigo
         /// </summary>
@@ -42,24 +42,24 @@ namespace GeoEspectro.Models
         /// <summary>
         /// ForeignKey para o utilizador associado ao artigo
         /// </summary>
-        public Utilizadores Utilizador { get; set; }
+        public Utilizadores Utilizador { get; set; } = null!;
 
         // Relacionamentos M - N
 
         /// <summary>
         /// Lista de todas as categorias
         /// </summary>
-        public ICollection<Categorias> ListaCategorias { get; set; }
-            
+        public ICollection<Categorias> ListaCategorias { get; set; } = [];
+
         /// <summary>
         /// Lista de todos os artigos
         /// </summary>
-        public ICollection<Gostos> ListaGostos { get; set; }
+        public ICollection<Gostos> ListaGostos { get; set; } = [];
 
         /// <summary>
         /// Lista dos artigos que compõem os Recursos
         /// </summary>
-        public ICollection<Recursos> ListaRecursos { get; set; }
+        public ICollection<Recursos> ListaRecursos { get; set; } = [];
 
         //public ICollection<Utilizadores> ListaUtilizadores { get; set; }
     }

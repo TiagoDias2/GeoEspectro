@@ -7,7 +7,7 @@ namespace GeoEspectro.Models
     public class Detalhes
     {
         /// <summary>
-        /// Detalhe Multimedia Princapal
+        /// Detalhe Multimedia Principal
         /// </summary>
         public bool principal { get; set; }
 
@@ -22,7 +22,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// ForeignKey para referenciar o artigos ao recuso
         /// </summary>
-        public Recursos Recurso { get; set; }
+        public Recursos Recurso { get; set; } = null!;
 
         /// <summary>
         /// ForeignKey para referenciar o recurso ao artigo
@@ -33,7 +33,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// ForeignKey para referenciar o recurso ao artigo
         /// </summary>
-        public Artigos Artigo { get; set; }
+        public Artigos Artigo { get; set; } = null!;
 
     }
 }

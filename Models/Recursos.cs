@@ -25,11 +25,11 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Local dos Recursos Multimédia
         /// </summary>
-        public String Local { get; set; }
+        public string Local { get; set; }
         /// <summary>
         /// Observações para os Recursos Multimédias
         /// </summary>
-        public String Observacao { get; set; }
+        public string? Observacao { get; set; }
 
         // Relacionamentos N - 1
 
@@ -42,13 +42,13 @@ namespace GeoEspectro.Models
         /// <summary>
         /// ForeignKey para o utilizador associado à biblioteca
         /// </summary>
-        public Utilizadores Utilizador { get; set; }
+        public Utilizadores Utilizador { get; set; } = null!;
 
         // Relacionamento M - N
 
         /// <summary>
         /// Lista dos artigos que compõem as bibliotecas
         /// </summary>
-        public ICollection<Artigos> ListaArtigos { get; set; }
+        public ICollection<Artigos> ListaArtigos { get; set; } = [];
     }
 }
