@@ -83,7 +83,7 @@ namespace GeoEspectro.Controllers
                 }
             }
 
-            if (artigo.ListaCategoriasSelecionadas == null || !artigo.ListaCategoriasSelecionadas.Any())
+            if (artigo.ListaCategoriasSelecionadas == null || artigo.ListaCategoriasSelecionadas.Count == 0)
             {
                 // não escolheu categorias
                 haErro = true;
