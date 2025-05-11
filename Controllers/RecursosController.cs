@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GeoEspectro.Data;
 using GeoEspectro.Models;
+using GeoEspectro.Data.Migrations;
 
 namespace GeoEspectro.Controllers
 {
@@ -14,9 +15,12 @@ namespace GeoEspectro.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public RecursosController(ApplicationDbContext context)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public RecursosController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Recursos
@@ -48,7 +52,7 @@ namespace GeoEspectro.Controllers
         // GET: Recursos/Create
         public IActionResult Create()
         {
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID");
+            ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome");
             return View();
         }
 
@@ -57,16 +61,70 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Data,Tipo,Local,Observação,UtilizadorFK")] Recursos recursos)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Tipo,Local,Ficheiro,Observação,UtilizadorFK")] Recursos recurso, IFormFile imagemFoto)
         {
+            // vars auxiliares
+            bool haErro = false;
+            string nomeImagem = "";
+
+            if (imagemFoto == null)
+            {
+                // não há imagem
+                haErro = true;
+                // crio msg de erro
+                ModelState.AddModelError("", "Tem de submeter uma Fotografia");
+            }
+
+            else
+            {
+                if (imagemFoto.ContentType != "image/jpeg"
+                    && imagemFoto.ContentType != "image/png")
+                {
+                    // não há imagem
+                    haErro = true;
+                    // crio msg de erro
+                    ModelState.AddModelError("", "Tem de submeter uma Fotografia do tipo indicado");
+                }
+                else
+                {
+                    // há imagem,
+                    // vamos processá-la
+                    //*********************
+                    // Novo nome para a imagem
+                    Guid g = Guid.NewGuid();
+                    nomeImagem = g.ToString();
+                    string extensao = Path.GetExtension(imagemFoto.FileName).ToLowerInvariant();
+                    nomeImagem += extensao;
+
+                    // guardar este nome na BD
+                    recurso.Ficheiro = nomeImagem;
+                }
+            }
+
+
             if (ModelState.IsValid)
             {
-                _context.Add(recursos);
+                recurso.Data = DateTime.Now;
+
+                _context.Add(recurso);
                 await _context.SaveChangesAsync();
+
+                string localizacaoImagem = _webHostEnvironment.WebRootPath;
+                localizacaoImagem = Path.Combine(localizacaoImagem, "imagens");
+                if (!Directory.Exists(localizacaoImagem))
+                {
+                    Directory.CreateDirectory(localizacaoImagem);
+                }
+                nomeImagem = Path.Combine(localizacaoImagem, nomeImagem);
+                using var stream = new FileStream(
+                    nomeImagem, FileMode.Create
+                    );
+                await imagemFoto.CopyToAsync(stream);
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.AutorFK);
-            return View(recursos);
+            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recurso.AutorFK);
+            return View(recurso);
         }
 
         // GET: Recursos/Edit/5
