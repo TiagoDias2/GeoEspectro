@@ -52,7 +52,7 @@ namespace GeoEspectro.Controllers
         // GET: Recursos/Create
         public IActionResult Create()
         {
-            ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome");
+            ViewData["AutorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome");
             return View();
         }
 
@@ -61,7 +61,7 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Tipo,Local,Ficheiro,Observação,UtilizadorFK")] Recursos recurso, IFormFile imagemFoto)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Tipo,Local,Ficheiro,Observação,AutorFK")] Recursos recurso, IFormFile imagemFoto)
         {
             // vars auxiliares
             bool haErro = false;
@@ -123,7 +123,7 @@ namespace GeoEspectro.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recurso.AutorFK);
+            ViewData["AutorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recurso.AutorFK);
             return View(recurso);
         }
 
@@ -140,7 +140,7 @@ namespace GeoEspectro.Controllers
             {
                 return NotFound();
             }
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.AutorFK);
+            ViewData["AutorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.AutorFK);
             return View(recursos);
         }
 
@@ -149,7 +149,7 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Data,Tipo,Local,Observação,UtilizadorFK")] Recursos recursos)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Data,Tipo,Local,Observação,AutorFK")] Recursos recursos)
         {
             if (id != recursos.Id)
             {
@@ -176,7 +176,7 @@ namespace GeoEspectro.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UtilizadorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.AutorFK);
+            ViewData["AutorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recursos.AutorFK);
             return View(recursos);
         }
 
