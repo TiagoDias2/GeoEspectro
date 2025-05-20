@@ -61,7 +61,7 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Tipo,Local,Ficheiro,Observação,AutorFK")] Recursos recurso, IFormFile imagemFoto)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Tipo,Local,Ficheiro,Observacao,AutorFK")] Recursos recurso, IFormFile imagemFoto)
         {
             // vars auxiliares
             bool haErro = false;
@@ -149,7 +149,7 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Data,Tipo,Local,Observação,AutorFK")] Recursos recursos)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Tipo,Local,Observacao,AutorFK")] Recursos recursos)
         {
             if (id != recursos.Id)
             {
