@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 *.jpg
 /wwwroot/imagens
+/wwwroot/videos/imagens
+/wwwroot/videos
