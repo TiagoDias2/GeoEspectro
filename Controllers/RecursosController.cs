@@ -66,6 +66,8 @@ namespace GeoEspectro.Controllers
             // vars auxiliares
             bool haErro = false;
             string nomeImagem = "";
+            string extensao = Path.GetExtension(imagemFoto.FileName).ToLowerInvariant();
+            var extensaoPermitidasMedia = new[] { ".jpeg", ".png", ".mp4", ".ogg", ".webm"};
 
             if (imagemFoto == null)
             {
@@ -77,14 +79,22 @@ namespace GeoEspectro.Controllers
 
             else
             {
-                if (imagemFoto.ContentType != "image/jpeg"
-                    && imagemFoto.ContentType != "image/png")
+                if (!extensaoPermitidasMedia.Contains(extensao))
                 {
                     // não há imagem
                     haErro = true;
                     // crio msg de erro
-                    ModelState.AddModelError("", "Tem de submeter uma Fotografia do tipo indicado");
+                    ModelState.AddModelError("", "Tem de submeter uma Fotografia/Video do tipo indicado");
                 }
+
+                else if (imagemFoto.Length > 20 * 1024 * 1024)
+                {
+                    // não tem a extensão pretendida
+                    haErro = true;
+                    // crio msg de erro
+                    ModelState.AddModelError("", "Não pode submeter ficheiros multimédia superiores a 20 MB");
+                }
+
                 else
                 {
                     // há imagem,
@@ -93,7 +103,6 @@ namespace GeoEspectro.Controllers
                     // Novo nome para a imagem
                     Guid g = Guid.NewGuid();
                     nomeImagem = g.ToString();
-                    string extensao = Path.GetExtension(imagemFoto.FileName).ToLowerInvariant();
                     nomeImagem += extensao;
 
                     // guardar este nome na BD
