@@ -42,7 +42,7 @@
         @{
             var ficheiro = Model.Ficheiro ?? "";
             var extensao = System.IO.Path.GetExtension(ficheiro).ToLowerInvariant();
-            var caminho = Url.Content($"~/imagens/{ficheiro}"); // ajuste se salvar noutra pasta
+            var caminho = Url.Content($"~/videos/{ficheiro}"); // ajuste se salvar noutra pasta
         }
 
         @if (extensao == ".mp4" || extensao == ".webm" || extensao == ".ogg")

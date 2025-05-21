@@ -67,7 +67,8 @@ namespace GeoEspectro.Controllers
             bool haErro = false;
             string nomeImagem = "";
             string extensao = Path.GetExtension(imagemFoto.FileName).ToLowerInvariant();
-            var extensaoPermitidasMedia = new[] { ".jpeg", ".png", ".mp4", ".ogg", ".webm"};
+            var extensaoPermitidasImagens = new[] { ".jpeg", ".png" };
+            var extensaoPermitidasVideo = new[] { ".mp4", ".ogg", ".webm" };
 
             if (imagemFoto == null)
             {
@@ -79,7 +80,7 @@ namespace GeoEspectro.Controllers
 
             else
             {
-                if (!extensaoPermitidasMedia.Contains(extensao))
+                if (!extensaoPermitidasImagens.Contains(extensao) && !extensaoPermitidasVideo.Contains(extensao))
                 {
                     // não há imagem
                     haErro = true;
@@ -115,11 +116,25 @@ namespace GeoEspectro.Controllers
             {
                 recurso.Data = DateTime.Now;
 
+                string localizacaoImagem = _webHostEnvironment.WebRootPath;
+
+                if (extensaoPermitidasImagens.Contains(extensao))
+                {
+                    recurso.Tipo = "Imagem";
+                    localizacaoImagem = Path.Combine(localizacaoImagem, "imagens");
+                }
+
+                else
+                {
+                    recurso.Tipo = "Video";
+                    localizacaoImagem = Path.Combine(localizacaoImagem, "videos");
+                }
+
                 _context.Add(recurso);
+
+
                 await _context.SaveChangesAsync();
 
-                string localizacaoImagem = _webHostEnvironment.WebRootPath;
-                localizacaoImagem = Path.Combine(localizacaoImagem, "imagens");
                 if (!Directory.Exists(localizacaoImagem))
                 {
                     Directory.CreateDirectory(localizacaoImagem);
