@@ -30,12 +30,30 @@
             </div>
             <div class="form-group">
                 <label asp-for="Ficheiro" class="control-label"></label>
-                @* <input asp-for="Fotografia" class="form-control" /> *@
+
+                @if (Model.Ficheiro != null)
+                {
+                    var caminho = Model.Tipo == "Imagem" ? "/imagens/" : "/videos/";
+                    if (Model.Tipo == "Imagem")
+                    {
+                        <img src="@($"{caminho}{Model.Ficheiro}")" alt="Imagem atual" class="img-thumbnail mb-2" width="200" />
+                    }
+                    else
+                    {
+                        <video width="320" height="240" controls class="mb-2">
+                            <source src="@($"{caminho}{Model.Ficheiro}")" type="video/mp4">
+                            O seu navegador não suporta vídeo.
+                        </video>
+                    }
+                }
+
                 <input type="file"
-                       accept=".png,.jpeg, .mp4, .ogg, .webm"
-                       name="imagemFoto"
+                       accept=".png,.jpeg,.mp4,.ogg,.webm"
+                       name="novoFicheiro"
                        class="form-control" />
                 <span asp-validation-for="Ficheiro" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <label asp-for="Observacao" class="control-label"></label>
                 <input asp-for="Observacao" class="form-control" />
