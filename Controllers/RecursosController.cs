@@ -275,13 +275,26 @@ namespace GeoEspectro.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var recursos = await _context.Recursos.FindAsync(id);
-            if (recursos != null)
+            var recurso = await _context.Recursos.FindAsync(id);
+            if (recurso != null)
             {
-                _context.Recursos.Remove(recursos);
+                // Só tenta apagar ficheiro se houver um nome válido
+                if (!string.IsNullOrEmpty(recurso.Ficheiro))
+                {
+                    string root = _webHostEnvironment.WebRootPath;
+                    string subpasta = recurso.Tipo == "Imagem" ? "imagens" : "videos";
+                    string caminhoFicheiro = Path.Combine(root, subpasta, recurso.Ficheiro);
+
+                    if (System.IO.File.Exists(caminhoFicheiro))
+                    {
+                        System.IO.File.Delete(caminhoFicheiro);
+                    }
+                }
+
+                _context.Recursos.Remove(recurso);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
