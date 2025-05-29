@@ -59,12 +59,10 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Titulo,Fotografia,Texto, UtilizadorFK, ListaCategoriasSelecionadas")] Artigos artigo,
-            IFormFile imagemFoto)
+        public async Task<IActionResult> Create([Bind("Titulo,Texto, UtilizadorFK, ListaCategoriasSelecionadas")] Artigos artigo)
         {
             // vars auxiliares
             bool haErro = false;
-            string nomeImagem = "";
 
             if(artigo.AutorFK <= 0)
             {
@@ -97,40 +95,6 @@ namespace GeoEspectro.Controllers
                     .ToList();
             }
 
-            if (imagemFoto == null)
-            {
-                // não há imagem
-                haErro = true;
-                // crio msg de erro
-                ModelState.AddModelError("", "Tem de submeter uma Fotografia");
-            }
-
-            else
-            {
-                if(imagemFoto.ContentType != "image/jpeg"
-                    && imagemFoto.ContentType != "image/png")
-                {
-                    // não há imagem
-                    haErro = true;
-                    // crio msg de erro
-                    ModelState.AddModelError("", "Tem de submeter uma Fotografia do tipo indicado");
-                }
-                else
-                {
-                    // há imagem,
-                    // vamos processá-la
-                    //*********************
-                    // Novo nome para a imagem
-                    Guid g = Guid.NewGuid();
-                    nomeImagem = g.ToString();
-                    string extensao = Path.GetExtension(imagemFoto.FileName).ToLowerInvariant();
-                    nomeImagem += extensao;
-
-                    // guardar este nome na BD
-                    artigo.Fotografia = nomeImagem;
-                }
-            }
-
             // Avalia se os dados estão de acordo com o Model
             if (ModelState.IsValid && !haErro)
             {
@@ -138,18 +102,6 @@ namespace GeoEspectro.Controllers
 
                 _context.Add(artigo);
                 await _context.SaveChangesAsync();
-
-                string localizacaoImagem = _webHostEnvironment.WebRootPath;
-                localizacaoImagem = Path.Combine(localizacaoImagem, "imagens");
-                if (!Directory.Exists(localizacaoImagem))
-                {
-                    Directory.CreateDirectory(localizacaoImagem);
-                }
-                nomeImagem = Path.Combine(localizacaoImagem, nomeImagem);
-                using var stream = new FileStream(
-                    nomeImagem, FileMode.Create
-                    );
-                await imagemFoto.CopyToAsync( stream );
 
                 return RedirectToAction(nameof(Index));
             }
@@ -180,7 +132,7 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Titulo,Fotografia,Texto,Data")] Artigos artigos)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Titulo,Texto,Data")] Artigos artigos)
         {
             if (id != artigos.Id)
             {

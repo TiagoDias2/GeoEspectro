@@ -96,7 +96,7 @@ namespace GeoEspectro.Data.Migrations
                 column: "AutorFK",
                 principalTable: "Utilizadores",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
         }
 
         /// <inheritdoc />

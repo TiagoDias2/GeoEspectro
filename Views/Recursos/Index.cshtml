@@ -25,6 +25,9 @@
                 @Html.DisplayNameFor(model => model.Local)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Ficheiro)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Observacao)
             </th>
             <th>
@@ -48,11 +51,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Local)
             </td>
+            <th>
+                @Html.DisplayNameFor(model => model.Ficheiro)
+            </th>
             <td>
                 @Html.DisplayFor(modelItem => item.Observacao)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Autor.ID)
+                @Html.DisplayFor(modelItem => item.Autor.Nome)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

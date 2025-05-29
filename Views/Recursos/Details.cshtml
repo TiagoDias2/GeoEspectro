@@ -4,8 +4,10 @@
     ViewData["Title"] = "Details";
 }
 
+<link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
 <h1>Details</h1>
 
+<script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 <div>
     <h4>Recursos</h4>
     <hr />
@@ -34,21 +36,48 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Local)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Ficheiro)
+        </dt>
+        @{
+            var ficheiro = Model.Ficheiro ?? "";
+            var extensao = System.IO.Path.GetExtension(ficheiro).ToLowerInvariant();
+            var caminho = Url.Content($"~/videos/{ficheiro}"); // ajuste se salvar noutra pasta
+        }
+
+        @if (extensao == ".mp4" || extensao == ".webm" || extensao == ".ogg")
+        {
+            <video id="meuVideo"
+                   class="video-js vjs-default-skin"
+                   controls
+                   preload="auto"
+                   width="450"
+                   height="300"
+                   data-setup="{}">
+                <source src="@caminho" type="video/@extensao.TrimStart('.')">
+                O seu navegador não suporta a reprodução de vídeo.
+            </video>
+        }
+        else
+        {
+            <img src="@Url.Content($"~/imagens/{ficheiro}")" alt="Imagem" class="img-fluid" style="max-width: 300px;" />
+        }
+
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Observacao)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class = "col-sm-10">    
             @Html.DisplayFor(model => model.Observacao)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Autor)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Autor.ID)
+            @Html.DisplayFor(model => model.Autor.Nome)
         </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back to List</a>  
 </div>

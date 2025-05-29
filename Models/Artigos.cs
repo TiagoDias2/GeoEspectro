@@ -20,11 +20,6 @@ namespace GeoEspectro.Models
         public string Titulo { get; set; } = "";
 
         /// <summary>
-        /// Fotografia associada ao artigo (Descarte)
-        /// </summary>
-        public string Fotografia { get; set; } = null!;
-
-        /// <summary>
         /// Conteudo do artigo
         /// </summary>
         public string Texto { get; set; } = "";
