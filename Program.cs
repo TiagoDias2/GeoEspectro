@@ -76,7 +76,10 @@ builder.Services.AddSwaggerGen(c => {
         Description = "API para gestão de categorias, recursos multimédia associados aos artigos publicados"
     });
 
-
+    // Caminho para o XML gerado
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 
 });
 
