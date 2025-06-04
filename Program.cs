@@ -6,6 +6,8 @@ using System.Text.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using GeoEspectro.Services;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,12 +64,35 @@ builder.Services.AddAuthentication(options => { })
 // configuração do JWT
 builder.Services.AddScoped<TokenService>();
 
+// Adiciona o Swagger
+// builder.Services.AddEndpointsApiExplorer();   // necessária apenas para APIs mínimas. 
+// builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c => {
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Minha API de gestão de Artigos de Investigação",
+        Version = "v1",
+        Description = "API para gestão de categorias, recursos multimédia associados aos artigos publicados"
+    });
+
+    // Caminho para o XML gerado
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+
+    // inciar o 'midleware' do Swagger
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
