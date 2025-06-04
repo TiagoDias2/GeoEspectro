@@ -1,4 +1,4 @@
-﻿@model GeoEspectro.Models.Artigos
+﻿@model GeoEspectro.Models.ViewModels.ArtigoDTO
 
 @{
     ViewData["Title"] = "Criar Artigo";
@@ -10,33 +10,35 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Create" method="post">
             <div class="form-group">
-                <label asp-for="Titulo" class="control-label"></label>
+                <label asp-for="Titulo"></label>
                 <input asp-for="Titulo" class="form-control" />
                 <span asp-validation-for="Titulo" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Texto" class="control-label"></label>
-                <input asp-for="Texto" class="form-control" />
+                <label asp-for="Texto"></label>
+                <textarea asp-for="Texto" class="form-control"></textarea>
                 <span asp-validation-for="Texto" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="AutorFK" class="control-label"></label>
-                <select asp-for="AutorFK" class="form-control" asp-items="ViewBag.UtilizadorFK">
-                    <option value="0">Escolha um utilizador, por favor</option>
+                <label asp-for="UtilizadorFK"></label>
+                <select asp-for="UtilizadorFK" asp-items="Model.ListaUtilizadores" class="form-control">
+                    <option value="">-- Selecione um utilizador --</option>
                 </select>
+                <span asp-validation-for="UtilizadorFK" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="ListaCategoriasSelecionadas" class="control-label"></label>
-                <select asp-for="ListaCategoriasSelecionadas" asp-items="ViewBag.ListaCategorias" multiple class="form-control"></select>
+                <label asp-for="ListaCategoriasSelecionadas"></label>
+                <select asp-for="ListaCategoriasSelecionadas" asp-items="Model.ListaCategorias" class="form-control" multiple>
+                </select>
+                <span asp-validation-for="ListaCategoriasSelecionadas" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+            <button type="submit" class="btn btn-primary">Criar Artigo</button>
         </form>
     </div>
 </div>

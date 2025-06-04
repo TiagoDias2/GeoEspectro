@@ -49,13 +49,6 @@ namespace GeoEspectro.Models
         /// </summary>
         public ICollection<Categorias> ListaCategorias { get; set; } = [];
 
-
-        /// <summary>
-        /// Lista de categorias selecionadas
-        /// </summary>
-        [NotMapped]
-        public List<int> ListaCategoriasSelecionadas { get; set; } = new List<int>();
-
         /// <summary>
         /// Lista de Gostos associados a cada artigo
         /// </summary>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GeoEspectro.Data;
 using GeoEspectro.Models;
+using GeoEspectro.Models.ViewModels;
 
 namespace GeoEspectro.Controllers
 {
@@ -37,7 +38,10 @@ namespace GeoEspectro.Controllers
             }
 
             var artigo = await _context.Artigos
+                .Include(a => a.ListaCategorias)
+                .Include(a => a.Autor)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (artigo == null)
             {
                 return NotFound();
@@ -49,9 +53,13 @@ namespace GeoEspectro.Controllers
         // GET: Artigos/Create
         public IActionResult Create()
         {
-            ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome");
-            ViewData["ListaCategorias"] = new MultiSelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria");
-            return View();
+            var viewModel = new ArtigoDTO
+            {
+                ListaUtilizadores = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome"),
+                ListaCategorias = new MultiSelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria")
+            };
+
+            return View(viewModel);
         }
 
         // POST: Artigos/Create
@@ -59,56 +67,30 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Titulo,Texto, UtilizadorFK, ListaCategoriasSelecionadas")] Artigos artigo)
+        public async Task<IActionResult> Create(ArtigoDTO viewModel)
         {
-            // vars auxiliares
-            bool haErro = false;
-
-            if(artigo.AutorFK <= 0)
+            if (!ModelState.IsValid)
             {
-                // não há imagem
-                haErro = true;
-                // crio msg de erro
-                ModelState.AddModelError("", "Tem de escolher um utilizador");
-            }
-            else
-            {
-                var utilizadorExiste = await _context.Utilizadores.AnyAsync(u => u.ID == artigo.AutorFK);
-                if (!utilizadorExiste)
-                {
-                    haErro = true;
-                    ModelState.AddModelError("", "O utilizador selecionado não existe.");
-                }
+                viewModel.ListaUtilizadores = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome", viewModel.UtilizadorFK);
+                viewModel.ListaCategorias = new MultiSelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria", viewModel.ListaCategoriasSelecionadas);
+                return View(viewModel);
             }
 
-            if (artigo.ListaCategoriasSelecionadas == null || artigo.ListaCategoriasSelecionadas.Count == 0)
+            var artigo = new Artigos
             {
-                // não escolheu categorias
-                haErro = true;
-                // apresenta mensagem de erro
-                ModelState.AddModelError("", "Tem de escolher pelo menos uma categoria.");
-            }
-            else
-            {
-                artigo.ListaCategorias = _context.Categorias
-                    .Where(c => artigo.ListaCategoriasSelecionadas.Contains(c.Id))
-                    .ToList();
-            }
+                Titulo = viewModel.Titulo,
+                Texto = viewModel.Texto,
+                AutorFK = viewModel.UtilizadorFK,
+                Data = DateTime.Now,
+                ListaCategorias = _context.Categorias
+                    .Where(c => viewModel.ListaCategoriasSelecionadas.Contains(c.Id))
+                    .ToList()
+            };
 
-            // Avalia se os dados estão de acordo com o Model
-            if (ModelState.IsValid && !haErro)
-            {
-                artigo.Data = DateTime.Now;
+            _context.Artigos.Add(artigo);
+            await _context.SaveChangesAsync();
 
-                _context.Add(artigo);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UtilizadorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "Id", "Nome");
-            ViewData["ListaCategorias"] = new MultiSelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria", artigo.ListaCategorias);
-
-            return View(artigo);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Artigos/Edit/5
