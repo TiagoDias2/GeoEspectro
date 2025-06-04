@@ -60,6 +60,8 @@ builder.Services.AddAuthentication(options => { })
        };
    });
 
+// declarar o serviço Signal R
+builder.Services.AddSignalR();
 
 // configuração do JWT
 builder.Services.AddScoped<TokenService>();
@@ -107,6 +109,10 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+// cria uma 'ponte' entre o nosso serviço SignalR (GostosHub)
+// e o javascript do browser
+app.MapHub<GostosHub>("/gostoshub");
 
 app.MapControllerRoute(
     name: "default",

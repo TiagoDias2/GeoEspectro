@@ -22,12 +22,11 @@
                 @Html.DisplayNameFor(model => model.Data)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Autor)
+                @Html.DisplayNameFor(model => model.Autor.Nome)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ListaCategorias)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -41,6 +40,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Data)
+            </td>
+            <td>
+                @Html.DisplayNameFor(model => model.ListaCategorias)
             </td>
             <th>
                 @Html.DisplayNameFor(model => model.Autor.Nome)
