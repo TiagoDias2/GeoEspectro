@@ -18,4 +18,6 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Utilizadores> Utilizadores { get; set; }
 
     public DbSet<Categorias> Categorias { get; set; }
+
+    public DbSet<Detalhes> Detalhes { get; set; }
 }

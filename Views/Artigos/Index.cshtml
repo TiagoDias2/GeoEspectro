@@ -9,50 +9,46 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Titulo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Texto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Data)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Autor.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ListaCategorias)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.First().Titulo)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Texto)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Data)</th>
+            <th>Categorias</th>
+            <th>Autor</th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Titulo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Texto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Data)
-            </td>
-            <td>
-                @Html.DisplayNameFor(model => model.ListaCategorias)
-            </td>
-            <th>
-                @Html.DisplayNameFor(model => model.Autor.Nome)
-            </th>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Titulo</td>
+                <td>@item.Texto</td>
+                <td>@item.Data.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    @if (item.ListaCategorias != null && item.ListaCategorias.Any())
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var cat in item.ListaCategorias)
+                            {
+                                <li>@cat.Categoria</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>(Sem categorias)</span>
+                    }
+                </td>
+                <td>@item.Autor?.Nome</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalhes</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Apagar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

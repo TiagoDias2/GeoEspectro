@@ -26,7 +26,12 @@ namespace GeoEspectro.Controllers
         // GET: Artigos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Artigos.ToListAsync());
+            var artigos = await _context.Artigos
+                .Include(a => a.Autor)
+                .Include(a => a.ListaCategorias)
+                .ToListAsync();
+
+            return View(artigos);
         }
 
         // GET: Artigos/Details/5
@@ -40,6 +45,8 @@ namespace GeoEspectro.Controllers
             var artigo = await _context.Artigos
                 .Include(a => a.ListaCategorias)
                 .Include(a => a.Autor)
+                .Include(a => a.ListaRecursos)
+                    .ThenInclude(d => d.Recurso)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (artigo == null)
@@ -56,7 +63,8 @@ namespace GeoEspectro.Controllers
             var viewModel = new ArtigoDTO
             {
                 ListaUtilizadores = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome"),
-                ListaCategorias = new MultiSelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria")
+                ListaCategorias = new MultiSelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria"),
+                ListaRecursos = new MultiSelectList(_context.Recursos.OrderBy(r => r.Nome), "Id", "Nome")
             };
 
             return View(viewModel);
@@ -73,6 +81,7 @@ namespace GeoEspectro.Controllers
             {
                 viewModel.ListaUtilizadores = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome", viewModel.UtilizadorFK);
                 viewModel.ListaCategorias = new MultiSelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria", viewModel.ListaCategoriasSelecionadas);
+                viewModel.ListaRecursos = new MultiSelectList(_context.Recursos.OrderBy(r => r.Nome), "Id", "Titulo", viewModel.ListaRecursosSelecionados);
                 return View(viewModel);
             }
 
@@ -88,10 +97,25 @@ namespace GeoEspectro.Controllers
             };
 
             _context.Artigos.Add(artigo);
+            await _context.SaveChangesAsync(); // Garante que artigo.Id existe
+
+            // Adiciona cada recurso selecionado via Detalhes
+            foreach (var recursoId in viewModel.ListaRecursosSelecionados)
+            {
+                var detalhe = new Detalhes
+                {
+                    ArtigoFK = artigo.Id,
+                    RecursoFK = recursoId,
+                    Principal = false // ou lógica para definir se é o principal
+                };
+                _context.Add(detalhe);
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
+
 
         // GET: Artigos/Edit/5
         public async Task<IActionResult> Edit(int? id)

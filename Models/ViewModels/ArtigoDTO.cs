@@ -23,7 +23,13 @@ namespace GeoEspectro.Models.ViewModels
         [Required(ErrorMessage = "Tem de escolher pelo menos uma categoria.")]
         public List<int> ListaCategoriasSelecionadas { get; set; } = [];
 
+        [Display(Name = "Recursos")]
+        [Required(ErrorMessage = "Tem de escolher pelo menos uma recurso.")]
+        public List<int> ListaRecursosSelecionados { get; set; } = [];
+
         public MultiSelectList? ListaCategorias { get; set; }
+
+        public MultiSelectList? ListaRecursos { get; set; }
 
         public SelectList? ListaUtilizadores { get; set; }
     }
