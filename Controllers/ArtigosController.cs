@@ -24,14 +24,19 @@ namespace GeoEspectro.Controllers
         }
 
         // GET: Artigos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var artigos = await _context.Artigos
+            var artigos = _context.Artigos
                 .Include(a => a.Autor)
                 .Include(a => a.ListaCategorias)
-                .ToListAsync();
+                .AsQueryable();
 
-            return View(artigos);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                artigos = artigos.Where(a => a.Titulo.ToLower().Contains(searchString.ToLower()));
+            }
+
+            return View(await artigos.ToListAsync());
         }
 
         // GET: Artigos/Details/5
