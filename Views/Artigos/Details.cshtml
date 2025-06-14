@@ -82,9 +82,14 @@
                     <div class="carousel-item @ativo text-center">
                         @if (isVideo)
                         {
-                            <video width="100%" height="auto" controls>
+                            <video id="meuVideo"
+                                   class="video-js vjs-default-skin"
+                                   controls
+                                   width="100%"
+                                   data-setup="{}"
+                                   alt="@detalhe.Recurso.Nome">
                                 <source src="@caminho" type="video/@extensao.TrimStart('.')">
-                                O seu navegador não suporta vídeo.
+                                O seu navegador não suporta a reprodução de vídeo.
                             </video>
                         }
                         else
