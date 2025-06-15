@@ -47,7 +47,7 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Lista de todas as categorias
         /// </summary>
-        public ICollection<Categorias> ListaCategorias { get; set; } = [];
+        public ICollection<ArtigosCategoria> ListaCategorias { get; set; } = [];
 
         /// <summary>
         /// Lista de Gostos associados a cada artigo

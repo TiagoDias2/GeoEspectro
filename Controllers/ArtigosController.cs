@@ -24,19 +24,40 @@ namespace GeoEspectro.Controllers
         }
 
         // GET: Artigos
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, string categoriaId)
         {
-            var artigos = _context.Artigos
-                .Include(a => a.Autor)
+            // Base query
+            var artigosQuery = _context.Artigos
                 .Include(a => a.ListaCategorias)
+                .Include(a => a.Autor)
                 .AsQueryable();
 
+            // Filtrar por título
             if (!string.IsNullOrEmpty(searchString))
             {
-                artigos = artigos.Where(a => a.Titulo.ToLower().Contains(searchString.ToLower()));
+                artigosQuery = artigosQuery.Where(a => a.Titulo.Contains(searchString));
             }
 
-            return View(await artigos.ToListAsync());
+            // Filtrar por categoria
+            if (!string.IsNullOrEmpty(categoriaId))
+            {
+                artigosQuery = artigosQuery.Where(a => a.ListaCategorias.Any(c => c.CategoriaId.ToString() == categoriaId));
+            }
+
+            // Obter categorias
+            var categorias = await _context.Categorias
+                .Select(c => new { c.Id, c.Categoria })
+                .ToListAsync();
+
+            var viewModel = new ArtigosIndexDTO
+            {
+                SearchString = searchString,
+                CategoriaId = categoriaId,
+                Artigos = await artigosQuery.ToListAsync(),
+                Categorias = new SelectList(categorias, "Id", "Nome")
+            };
+
+            return View(viewModel);
         }
 
         // GET: Artigos/Details/5
@@ -96,9 +117,11 @@ namespace GeoEspectro.Controllers
                 Texto = viewModel.Texto,
                 AutorFK = viewModel.UtilizadorFK,
                 Data = DateTime.Now,
-                ListaCategorias = _context.Categorias
-                    .Where(c => viewModel.ListaCategoriasSelecionadas.Contains(c.Id))
-                    .ToList()
+                ListaCategorias = viewModel.ListaCategoriasSelecionadas
+                    .Select(catId => new ArtigosCategoria
+                    {
+                        CategoriaId = catId
+                    }).ToList()
             };
 
             _context.Artigos.Add(artigo);

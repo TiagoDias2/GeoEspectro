@@ -23,6 +23,6 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Lista dos artigos associados ás categorias
         /// </summary>
-        public ICollection<Artigos> ListaArtigos { get; set; } = [];
+        public ICollection<ArtigosCategoria> ListaArtigos { get; set; } = [];
     }
 }
