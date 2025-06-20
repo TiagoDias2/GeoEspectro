@@ -4,10 +4,10 @@ namespace GeoEspectro.Models.ViewModels
 {
     public class ArtigosIndexDTO
     {
-        public string SearchString { get; set; }
-        public string CategoriaId { get; set; }
+        public List<Artigos> Artigos { get; set; } = new();
+        public List<SelectListItem> Categorias { get; set; } = new();
 
-        public List<Artigos> Artigos { get; set; }
-        public SelectList Categorias { get; set; }
+        public string? SearchString { get; set; }
+        public string? CategoriaId { get; set; }
     }
 }

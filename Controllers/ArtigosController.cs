@@ -24,41 +24,42 @@ namespace GeoEspectro.Controllers
         }
 
         // GET: Artigos
-        public async Task<IActionResult> Index(string searchString, string categoriaId)
+        public async Task<IActionResult> Index(string searchString, string? categoriaId)
         {
-            // Base query
-            var artigosQuery = _context.Artigos
+            var query = _context.Artigos
                 .Include(a => a.ListaCategorias)
-                .Include(a => a.Autor)
+                    .ThenInclude(ac => ac.Categoria)
                 .AsQueryable();
 
-            // Filtrar por título
             if (!string.IsNullOrEmpty(searchString))
             {
-                artigosQuery = artigosQuery.Where(a => a.Titulo.Contains(searchString));
+                query = query.Where(a => a.Titulo.Contains(searchString));
             }
 
-            // Filtrar por categoria
-            if (!string.IsNullOrEmpty(categoriaId))
+            // Fazemos o parse apenas para o filtro, mas não usamos como binding no DTO
+            if (!string.IsNullOrEmpty(categoriaId) && int.TryParse(categoriaId, out int catId))
             {
-                artigosQuery = artigosQuery.Where(a => a.ListaCategorias.Any(c => c.CategoriaId.ToString() == categoriaId));
+                query = query.Where(a => a.ListaCategorias.Any(ac => ac.CategoriaId == catId));
             }
-
-            // Obter categorias
-            var categorias = await _context.Categorias
-                .Select(c => new { c.Id, c.Categoria })
-                .ToListAsync();
 
             var viewModel = new ArtigosIndexDTO
             {
                 SearchString = searchString,
-                CategoriaId = categoriaId,
-                Artigos = await artigosQuery.ToListAsync(),
-                Categorias = new SelectList(categorias, "Id", "Nome")
+                CategoriaId = categoriaId, // Mantemos como string aqui, como veio da URL
+                Artigos = await query.ToListAsync(),
+                Categorias = await _context.Categorias
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.Id.ToString(),
+                        Text = c.Categoria
+                    })
+                    .ToListAsync()
             };
 
             return View(viewModel);
         }
+
+
 
         // GET: Artigos/Details/5
         public async Task<IActionResult> Details(int? id)
