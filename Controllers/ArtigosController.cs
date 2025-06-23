@@ -71,6 +71,7 @@ namespace GeoEspectro.Controllers
 
             var artigo = await _context.Artigos
                 .Include(a => a.ListaCategorias)
+                    .ThenInclude(ac => ac.Categoria)
                 .Include(a => a.Autor)
                 .Include(a => a.ListaRecursos)
                     .ThenInclude(d => d.Recurso)
