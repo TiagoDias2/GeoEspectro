@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GeoEspectro.Models
 {
+    [Table("Artigos")]
     public class Artigos
     {
         /// <summary>

@@ -4,6 +4,7 @@ using GeoEspectro.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeoEspectro.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250527193749_ApplicationUser")]
+    partial class ApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,7 +70,7 @@ namespace GeoEspectro.Data.Migrations
                     b.ToTable("ArtigosUtilizadores");
                 });
 
-            modelBuilder.Entity("GeoEspectro.Data.ApplicationUser", b =>
+            modelBuilder.Entity("GeoEspectro.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -119,7 +122,7 @@ namespace GeoEspectro.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int?>("UtilizadorID")
+                    b.Property<int>("UtilizadoresID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -132,7 +135,7 @@ namespace GeoEspectro.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("UtilizadorID");
+                    b.HasIndex("UtilizadoresID");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -468,13 +471,15 @@ namespace GeoEspectro.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GeoEspectro.Data.ApplicationUser", b =>
+            modelBuilder.Entity("GeoEspectro.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("GeoEspectro.Models.Utilizadores", "Utilizador")
+                    b.HasOne("GeoEspectro.Models.Utilizadores", "Utilizadores")
                         .WithMany()
-                        .HasForeignKey("UtilizadorID");
+                        .HasForeignKey("UtilizadoresID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Utilizador");
+                    b.Navigation("Utilizadores");
                 });
 
             modelBuilder.Entity("GeoEspectro.Models.Gostos", b =>
@@ -518,7 +523,7 @@ namespace GeoEspectro.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("GeoEspectro.Data.ApplicationUser", null)
+                    b.HasOne("GeoEspectro.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -527,7 +532,7 @@ namespace GeoEspectro.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("GeoEspectro.Data.ApplicationUser", null)
+                    b.HasOne("GeoEspectro.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -542,7 +547,7 @@ namespace GeoEspectro.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GeoEspectro.Data.ApplicationUser", null)
+                    b.HasOne("GeoEspectro.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -551,7 +556,7 @@ namespace GeoEspectro.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("GeoEspectro.Data.ApplicationUser", null)
+                    b.HasOne("GeoEspectro.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
