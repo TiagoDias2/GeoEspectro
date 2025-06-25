@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeoEspectro.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250618224714_CorrigirAplicationUser")]
-    partial class CorrigirAplicationUser
+    [Migration("20250625111025_Corrigirmigracoes")]
+    partial class Corrigirmigracoes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -135,7 +135,9 @@ namespace GeoEspectro.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("UtilizadorID");
+                    b.HasIndex("UtilizadorID")
+                        .IsUnique()
+                        .HasFilter("[UtilizadorID] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -474,8 +476,9 @@ namespace GeoEspectro.Data.Migrations
             modelBuilder.Entity("GeoEspectro.Data.ApplicationUser", b =>
                 {
                     b.HasOne("GeoEspectro.Models.Utilizadores", "Utilizador")
-                        .WithMany()
-                        .HasForeignKey("UtilizadorID");
+                        .WithOne()
+                        .HasForeignKey("GeoEspectro.Data.ApplicationUser", "UtilizadorID")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Utilizador");
                 });

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GeoEspectro.Models
 {
@@ -12,6 +13,7 @@ namespace GeoEspectro.Models
         /// Identificador da class do utilizador
         /// </summary>
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         /// <summary>
