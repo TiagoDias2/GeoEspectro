@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeoEspectro.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250625111025_Corrigirmigracoes")]
-    partial class Corrigirmigracoes
+    [Migration("20250627222105_CorrigirFinalmenteManage")]
+    partial class CorrigirFinalmenteManage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -122,9 +122,6 @@ namespace GeoEspectro.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int?>("UtilizadorID")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -134,10 +131,6 @@ namespace GeoEspectro.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("UtilizadorID")
-                        .IsUnique()
-                        .HasFilter("[UtilizadorID] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -256,6 +249,11 @@ namespace GeoEspectro.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Morada")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -287,6 +285,9 @@ namespace GeoEspectro.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("IdentityUserId")
+                        .IsUnique();
 
                     b.ToTable("Utilizadores");
                 });
@@ -473,16 +474,6 @@ namespace GeoEspectro.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GeoEspectro.Data.ApplicationUser", b =>
-                {
-                    b.HasOne("GeoEspectro.Models.Utilizadores", "Utilizador")
-                        .WithOne()
-                        .HasForeignKey("GeoEspectro.Data.ApplicationUser", "UtilizadorID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Utilizador");
-                });
-
             modelBuilder.Entity("GeoEspectro.Models.Gostos", b =>
                 {
                     b.HasOne("GeoEspectro.Models.Artigos", "Artigo")
@@ -511,6 +502,17 @@ namespace GeoEspectro.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Utilizador");
+                });
+
+            modelBuilder.Entity("GeoEspectro.Models.Utilizadores", b =>
+                {
+                    b.HasOne("GeoEspectro.Data.ApplicationUser", "IdentityUser")
+                        .WithOne()
+                        .HasForeignKey("GeoEspectro.Models.Utilizadores", "IdentityUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

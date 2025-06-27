@@ -5,7 +5,7 @@
 namespace GeoEspectro.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Autenticacao : Migration
+    public partial class CorrigirFinalmenteManage : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

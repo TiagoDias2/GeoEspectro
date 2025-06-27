@@ -106,40 +106,42 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // Cria o novo utilizador de domínio
-                var novoUtilizador = new Utilizadores
-                {
-                    Nome = Input.Nome,
-                    Morada = Input.Morada,
-                    CodPostal = Input.CodPostal,
-                    Pais = Input.Pais,
-                    Nif = Input.Nif,
-                    Telemovel = Input.Telemovel,
-                    UserName = Input.Email
-                };
-
-                try
-                {
-                    _context.Utilizadores.Add(novoUtilizador);
-                    await _context.SaveChangesAsync(); // Salva no BD e gera ID
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError(string.Empty, $"Erro ao salvar dados do utilizador: {ex.Message}");
-                    return Page();
-                }
-
                 var user = CreateUser();
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-
-                user.UtilizadoresID = novoUtilizador.ID;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    // Agora criamos o Utilizadores com o user.Id
+                    var novoUtilizador = new Utilizadores
+                    {
+                        Nome = Input.Nome,
+                        Morada = Input.Morada,
+                        CodPostal = Input.CodPostal,
+                        Pais = Input.Pais,
+                        Nif = Input.Nif,
+                        Telemovel = Input.Telemovel,
+                        UserName = Input.Email,
+                        IdentityUserId = user.Id // ?? Aqui tens o valor correto
+                    };
+
+                    try
+                    {
+                        _context.Utilizadores.Add(novoUtilizador);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        var innerMessage = ex.InnerException?.Message ?? ex.Message;
+                        // Se falhar, desfaz o ApplicationUser
+                        await _userManager.DeleteAsync(user);
+                        ModelState.AddModelError(string.Empty, $"Erro ao salvar dados do utilizador: {innerMessage}");
+                        return Page();
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -164,10 +166,7 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
                     }
                 }
 
-                // Se o Identity falhar, desfaz o Utilizador criado
-                _context.Utilizadores.Remove(novoUtilizador);
-                await _context.SaveChangesAsync();
-
+                // Erros no Identity
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
