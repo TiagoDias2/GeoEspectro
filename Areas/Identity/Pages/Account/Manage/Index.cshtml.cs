@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+ï»¿using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using GeoEspectro.Data;
 using Microsoft.EntityFrameworkCore;
+using GeoEspectro.Models;
 
 namespace GeoEspectro.Areas.Identity.Pages.Account.Manage
 {
@@ -44,21 +45,18 @@ namespace GeoEspectro.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Morada")]
             public string Morada { get; set; }
 
-            [Display(Name = "Código Postal")]
+            [Display(Name = "CÃ³digo Postal")]
             public string CodPostal { get; set; }
 
-            [Display(Name = "País")]
+            [Display(Name = "PaÃ­s")]
             public string Pais { get; set; }
 
             [Display(Name = "NIF")]
             public string Nif { get; set; }
 
-            [Display(Name = "Telemóvel")]
+            [Display(Name = "TelemÃ³vel")]
             public string Telemovel { get; set; }
 
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -73,13 +71,12 @@ namespace GeoEspectro.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber,
                 Nome = utilizador?.Nome,
                 Morada = utilizador?.Morada,
                 CodPostal = utilizador?.CodPostal,
                 Pais = utilizador?.Pais,
                 Nif = utilizador?.Nif,
-                Telemovel = utilizador?.Telemovel
+                Telemovel = utilizador?.Telemovel ?? phoneNumber // fallback se nÃ£o houver
             };
         }
 
@@ -105,25 +102,38 @@ namespace GeoEspectro.Areas.Identity.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
+                foreach (var entry in ModelState)
+                {
+                    foreach (var error in entry.Value.Errors)
+                    {
+                        _logger.LogError($"Erro em {entry.Key}: {error.ErrorMessage}");
+                    }
+                }
+
                 await LoadAsync(user);
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
-            }
 
             var utilizador = await _context.Utilizadores
                 .FirstOrDefaultAsync(u => u.IdentityUserId == user.Id);
 
-            if (utilizador != null)
+            if (utilizador == null)
+            {
+                utilizador = new Utilizadores
+                {
+                    IdentityUserId = user.Id,
+                    Nome = Input.Nome,
+                    Morada = Input.Morada,
+                    CodPostal = Input.CodPostal,
+                    Pais = Input.Pais,
+                    Nif = Input.Nif,
+                    Telemovel = Input.Telemovel,
+                    UserName = user.UserName
+                };
+                _context.Utilizadores.Add(utilizador);
+            }
+            else
             {
                 utilizador.Nome = Input.Nome;
                 utilizador.Morada = Input.Morada;
@@ -131,10 +141,10 @@ namespace GeoEspectro.Areas.Identity.Pages.Account.Manage
                 utilizador.Pais = Input.Pais;
                 utilizador.Nif = Input.Nif;
                 utilizador.Telemovel = Input.Telemovel;
-
                 _context.Update(utilizador);
-                await _context.SaveChangesAsync();
             }
+
+            await _context.SaveChangesAsync();
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "O seu perfil foi atualizado com sucesso.";

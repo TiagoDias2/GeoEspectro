@@ -1,26 +1,53 @@
 ﻿@page
-@model IndexModel
+@model GeoEspectro.Areas.Identity.Pages.Account.Manage.IndexModel
 @{
-    ViewData["Title"] = "Profile";
-    ViewData["ActivePage"] = ManageNavPages.Index;
+    ViewData["Title"] = "Manage your account";
+    ViewData["ActivePage"] = "Index";
 }
 
 <h3>@ViewData["Title"]</h3>
+
 <partial name="_StatusMessage" for="StatusMessage" />
+
 <div class="row">
     <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <form method="post">
             <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
-                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Input.Nome" class="form-control" />
+                <label asp-for="Input.Nome" class="form-label"></label>
+                <span asp-validation-for="Input.Nome" class="text-danger"></span>
             </div>
+
             <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                <input asp-for="Input.Morada" class="form-control" />
+                <label asp-for="Input.Morada" class="form-label"></label>
+                <span asp-validation-for="Input.Morada" class="text-danger"></span>
             </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.CodPostal" class="form-control" />
+                <label asp-for="Input.CodPostal" class="form-label"></label>
+                <span asp-validation-for="Input.CodPostal" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Pais" class="form-control" />
+                <label asp-for="Input.Pais" class="form-label"></label>
+                <span asp-validation-for="Input.Pais" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Nif" class="form-control" />
+                <label asp-for="Input.Nif" class="form-label"></label>
+                <span asp-validation-for="Input.Nif" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Telemovel" class="form-control" />
+                <label asp-for="Input.Telemovel" class="form-label"></label>
+                <span asp-validation-for="Input.Telemovel" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
         </form>
     </div>
 </div>

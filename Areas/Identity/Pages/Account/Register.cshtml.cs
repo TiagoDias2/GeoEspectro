@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -67,7 +67,7 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "As passwords não coincidem.")]
+            [Compare("Password", ErrorMessage = "As passwords nÃ£o coincidem.")]
             public string ConfirmPassword { get; set; }
 
             // ?? Campos adicionais para Utilizadores:
@@ -79,17 +79,17 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
             public string Morada { get; set; }
 
             [Required]
-            [Display(Name = "Código Postal")]
+            [Display(Name = "CÃ³digo Postal")]
             public string CodPostal { get; set; }
 
-            [Display(Name = "País")]
+            [Display(Name = "PaÃ­s")]
             public string Pais { get; set; }
 
             [Required]
             [Display(Name = "NIF")]
             public string Nif { get; set; }
 
-            [Display(Name = "Telemóvel")]
+            [Display(Name = "TelemÃ³vel")]
             public string Telemovel { get; set; }
         }
 
@@ -126,7 +126,7 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
                         Nif = Input.Nif,
                         Telemovel = Input.Telemovel,
                         UserName = Input.Email,
-                        IdentityUserId = user.Id // ?? Aqui tens o valor correto
+                        IdentityUserId = user.Id // ðŸ”‘ Aqui tens o valor correto
                     };
 
                     try
@@ -143,6 +143,8 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
                         return Page();
                     }
 
+                    await _userManager.SetPhoneNumberAsync(user, Input.Telemovel);
+
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -152,7 +154,7 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirmação de email",
+                    await _emailSender.SendEmailAsync(Input.Email, "ConfirmaÃ§Ã£o de email",
                         $"Por favor confirme a sua conta <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicando aqui</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
@@ -188,7 +190,7 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
             }
             catch
             {
-                throw new InvalidOperationException($"Não foi possível criar uma instância de '{nameof(ApplicationUser)}'.");
+                throw new InvalidOperationException($"NÃ£o foi possÃ­vel criar uma instÃ¢ncia de '{nameof(ApplicationUser)}'.");
             }
         }
 
