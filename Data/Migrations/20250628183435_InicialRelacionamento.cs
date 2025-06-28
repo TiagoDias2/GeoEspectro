@@ -6,33 +6,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GeoEspectro.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class ApplicationUser : Migration
+    public partial class InicialRelacionamento : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
+        {
         {
             migrationBuilder.AddColumn<int>(
                 name: "UtilizadoresID",
                 table: "AspNetUsers",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
 
-            migrationBuilder.CreateTable(
-                name: "Artigos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fotografia = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Texto = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Data = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Artigos", x => x.Id);
-                });
+            migrationBuilder.AddColumn<int>(
+                name: "UtilizadoresID1",
+                table: "AspNetUsers",
+                type: "int",
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "Categorias",
@@ -54,12 +44,12 @@ namespace GeoEspectro.Data.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Morada = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CodPostal = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Pais = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Nif = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
-                    Telemovel = table.Column<string>(type: "nvarchar(18)", maxLength: 18, nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    Morada = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    CodPostal = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Pais = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Nif = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: true),
+                    Telemovel = table.Column<string>(type: "nvarchar(18)", maxLength: 18, nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -67,50 +57,73 @@ namespace GeoEspectro.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ArtigosCategorias",
+                name: "Artigos",
                 columns: table => new
                 {
-                    ListaArtigosId = table.Column<int>(type: "int", nullable: false),
-                    ListaCategoriasId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Titulo = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    Texto = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Data = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AutorFK = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArtigosCategorias", x => new { x.ListaArtigosId, x.ListaCategoriasId });
+                    table.PrimaryKey("PK_Artigos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ArtigosCategorias_Artigos_ListaArtigosId",
-                        column: x => x.ListaArtigosId,
-                        principalTable: "Artigos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ArtigosCategorias_Categorias_ListaCategoriasId",
-                        column: x => x.ListaCategoriasId,
-                        principalTable: "Categorias",
-                        principalColumn: "Id",
+                        name: "FK_Artigos_Utilizadores_AutorFK",
+                        column: x => x.AutorFK,
+                        principalTable: "Utilizadores",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ArtigosUtilizadores",
+                name: "Recursos",
                 columns: table => new
                 {
-                    ListaArtigosId = table.Column<int>(type: "int", nullable: false),
-                    ListaUtilizadosID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Data = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Tipo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Local = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ficheiro = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Observacao = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AutorFK = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArtigosUtilizadores", x => new { x.ListaArtigosId, x.ListaUtilizadosID });
+                    table.PrimaryKey("PK_Recursos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ArtigosUtilizadores_Artigos_ListaArtigosId",
-                        column: x => x.ListaArtigosId,
+                        name: "FK_Recursos_Utilizadores_AutorFK",
+                        column: x => x.AutorFK,
+                        principalTable: "Utilizadores",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ArtigosCategoria",
+                columns: table => new
+                {
+                    ArtigosId = table.Column<int>(type: "int", nullable: false),
+                    CategoriaId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArtigosCategoria", x => new { x.ArtigosId, x.CategoriaId });
+                    table.ForeignKey(
+                        name: "FK_ArtigosCategoria_Artigos_ArtigosId",
+                        column: x => x.ArtigosId,
                         principalTable: "Artigos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ArtigosUtilizadores_Utilizadores_ListaUtilizadosID",
-                        column: x => x.ListaUtilizadosID,
-                        principalTable: "Utilizadores",
-                        principalColumn: "ID",
+                        name: "FK_ArtigosCategoria_Categorias_CategoriaId",
+                        column: x => x.CategoriaId,
+                        principalTable: "Categorias",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -140,48 +153,25 @@ namespace GeoEspectro.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Recursos",
+                name: "Detalhes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Data = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Tipo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Local = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Observacao = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UtilizadorFK = table.Column<int>(type: "int", nullable: false)
+                    RecursoFK = table.Column<int>(type: "int", nullable: false),
+                    ArtigoFK = table.Column<int>(type: "int", nullable: false),
+                    Principal = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Recursos", x => x.Id);
+                    table.PrimaryKey("PK_Detalhes", x => new { x.RecursoFK, x.ArtigoFK });
                     table.ForeignKey(
-                        name: "FK_Recursos_Utilizadores_UtilizadorFK",
-                        column: x => x.UtilizadorFK,
-                        principalTable: "Utilizadores",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ArtigosRecursos",
-                columns: table => new
-                {
-                    ListaArtigosId = table.Column<int>(type: "int", nullable: false),
-                    ListaRecursosId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ArtigosRecursos", x => new { x.ListaArtigosId, x.ListaRecursosId });
-                    table.ForeignKey(
-                        name: "FK_ArtigosRecursos_Artigos_ListaArtigosId",
-                        column: x => x.ListaArtigosId,
+                        name: "FK_Detalhes_Artigos_ArtigoFK",
+                        column: x => x.ArtigoFK,
                         principalTable: "Artigos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ArtigosRecursos_Recursos_ListaRecursosId",
-                        column: x => x.ListaRecursosId,
+                        name: "FK_Detalhes_Recursos_RecursoFK",
+                        column: x => x.RecursoFK,
                         principalTable: "Recursos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -190,22 +180,31 @@ namespace GeoEspectro.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_UtilizadoresID",
                 table: "AspNetUsers",
-                column: "UtilizadoresID");
+                column: "UtilizadoresID",
+                unique: true,
+                filter: "[UtilizadoresID] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ArtigosCategorias_ListaCategoriasId",
-                table: "ArtigosCategorias",
-                column: "ListaCategoriasId");
+                name: "IX_AspNetUsers_UtilizadoresID1",
+                table: "AspNetUsers",
+                column: "UtilizadoresID1",
+                unique: true,
+                filter: "[UtilizadoresID1] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ArtigosRecursos_ListaRecursosId",
-                table: "ArtigosRecursos",
-                column: "ListaRecursosId");
+                name: "IX_Artigos_AutorFK",
+                table: "Artigos",
+                column: "AutorFK");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ArtigosUtilizadores_ListaUtilizadosID",
-                table: "ArtigosUtilizadores",
-                column: "ListaUtilizadosID");
+                name: "IX_ArtigosCategoria_CategoriaId",
+                table: "ArtigosCategoria",
+                column: "CategoriaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Detalhes_ArtigoFK",
+                table: "Detalhes",
+                column: "ArtigoFK");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Gostos_ArtigoFK",
@@ -213,9 +212,9 @@ namespace GeoEspectro.Data.Migrations
                 column: "ArtigoFK");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Recursos_UtilizadorFK",
+                name: "IX_Recursos_AutorFK",
                 table: "Recursos",
-                column: "UtilizadorFK");
+                column: "AutorFK");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUsers_Utilizadores_UtilizadoresID",
@@ -223,7 +222,14 @@ namespace GeoEspectro.Data.Migrations
                 column: "UtilizadoresID",
                 principalTable: "Utilizadores",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_Utilizadores_UtilizadoresID1",
+                table: "AspNetUsers",
+                column: "UtilizadoresID1",
+                principalTable: "Utilizadores",
+                principalColumn: "ID");
         }
 
         /// <inheritdoc />
@@ -233,14 +239,15 @@ namespace GeoEspectro.Data.Migrations
                 name: "FK_AspNetUsers_Utilizadores_UtilizadoresID",
                 table: "AspNetUsers");
 
-            migrationBuilder.DropTable(
-                name: "ArtigosCategorias");
+            migrationBuilder.DropForeignKey(
+                name: "FK_AspNetUsers_Utilizadores_UtilizadoresID1",
+                table: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "ArtigosRecursos");
+                name: "ArtigosCategoria");
 
             migrationBuilder.DropTable(
-                name: "ArtigosUtilizadores");
+                name: "Detalhes");
 
             migrationBuilder.DropTable(
                 name: "Gostos");
@@ -261,8 +268,16 @@ namespace GeoEspectro.Data.Migrations
                 name: "IX_AspNetUsers_UtilizadoresID",
                 table: "AspNetUsers");
 
+            migrationBuilder.DropIndex(
+                name: "IX_AspNetUsers_UtilizadoresID1",
+                table: "AspNetUsers");
+
             migrationBuilder.DropColumn(
                 name: "UtilizadoresID",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "UtilizadoresID1",
                 table: "AspNetUsers");
         }
     }

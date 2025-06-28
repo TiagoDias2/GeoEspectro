@@ -1,3 +1,4 @@
+using GeoEspectro.Data;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -68,6 +69,8 @@ namespace GeoEspectro.Models
         [Display(Name = "Username")]
         [StringLength(50)]
         public string UserName { get; set; }
+
+        public ApplicationUser ApplicationUser { get; set; }
 
         // Relacionamentos
 

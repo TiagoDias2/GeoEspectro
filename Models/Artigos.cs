@@ -1,3 +1,4 @@
+using GeoEspectro.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -60,15 +61,5 @@ namespace GeoEspectro.Models
         /// Lista de recursos multimédia associados
         /// </summary>
         public ICollection<Detalhes> ListaRecursos { get; set; } = [];
-    }
-}
-
-
-        /// <summary>
-        /// Lista dos artigos que compõem os Recursos
-        /// </summary>
-        public ICollection<Detalhes> ListaRecursos { get; set; } = [];
-
-        //public ICollection<Utilizadores> ListaUtilizadores { get; set; }
     }
 }
