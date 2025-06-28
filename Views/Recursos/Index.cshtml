@@ -4,41 +4,27 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Lista de Recursos</h1>
+<h1>Index</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Criar Novo</a>
+    <a asp-action="Create">Create New</a>
 </p>
-
-<table class="table table-striped">
+<table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Data)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Tipo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Local)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Ficheiro)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Observacao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Autor)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.Nome)</th>
+            <th>@Html.DisplayNameFor(model => model.Data)</th>
+            <th>@Html.DisplayNameFor(model => model.Tipo)</th>
+            <th>@Html.DisplayNameFor(model => model.Local)</th>
+            <th>@Html.DisplayNameFor(model => model.Ficheiro)</th>
+            <th>@Html.DisplayNameFor(model => model.Observacao)</th>
+            <th>@Html.DisplayNameFor(model => model.Autor)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>@Html.DisplayFor(modelItem => item.Nome)</td>
             <td>@Html.DisplayFor(modelItem => item.Data)</td>
@@ -53,6 +39,6 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

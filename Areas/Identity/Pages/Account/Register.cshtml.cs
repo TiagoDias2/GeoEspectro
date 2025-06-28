@@ -125,8 +125,8 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, $"Erro ao salvar dados do utilizador: {ex.Message}");
-                    return Page();
+                    var inner = ex.InnerException?.Message ?? ex.Message;
+                    ModelState.AddModelError(string.Empty, "Erro ao salvar dados do utilizador: " + inner);
                 }
 
                 var user = CreateUser();
