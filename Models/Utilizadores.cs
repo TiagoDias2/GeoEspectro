@@ -1,16 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GeoEspectro.Models
 {
     /// <summary>
-    /// Utilizadores não anonimos da aplicação 
+    /// Utilizadores não anónimos da aplicação 
     /// </summary>
     public class Utilizadores
     {
-
         /// <summary>
-        /// Identificador da class do utilizador
+        /// Identificador da classe do utilizador
         /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -37,7 +36,7 @@ namespace GeoEspectro.Models
         [Display(Name = "Código Postal")]
         [StringLength(50)]
         [RegularExpression("[1-9][0-9]{3}-[0-9]{3} [A-Za-z ]+",
-        ErrorMessage = "No {0} só são aceites algarismos e letras inglesas.")]
+            ErrorMessage = "No {0} só são aceites algarismos e letras inglesas.")]
         public string CodPostal { get; set; }
 
         /// <summary>
@@ -48,46 +47,32 @@ namespace GeoEspectro.Models
         public string Pais { get; set; }
 
         /// <summary>
-        /// Numero de Identificação Fiscal do Utilizador
+        /// Número de Identificação Fiscal
         /// </summary>
         [Display(Name = "NIF")]
         [StringLength(9)]
-        [RegularExpression("[1-9][0-9]{8}", ErrorMessage = "Deve escrever apenas 9 digitos no {0}")]
-        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
+        [RegularExpression("[0-9]{9}", ErrorMessage = "O {0} deve conter exatamente 9 dígitos.")]
         public string Nif { get; set; }
 
         /// <summary>
-        /// Número do dispositivo protátil do Utilizador
+        /// Número de Telemóvel
         /// </summary>
         [Display(Name = "Telemóvel")]
         [StringLength(18)]
-        [RegularExpression("(([+]|00)[0-9]{1,5})?[1-9][0-9]{5,10}", ErrorMessage = "Escreva um nº de telefone. Pode adicionar indicativo do país.")]
+        [RegularExpression(@"9[1236][0-9]{7}", ErrorMessage = "O número de telemóvel deve ser válido.")]
         public string Telemovel { get; set; }
 
-
         /// <summary>
-        /// Este atributo servirá para fazer a 'ponte' 
-        /// entre a tabela dos Utilizadores e a 
-        /// tabela da Autenticação da Microsoft Identity
+        /// Nome de utilizador (ligação à autenticação)
         /// </summary>
+        [Display(Name = "Username")]
         [StringLength(50)]
-        public string UserName { get; set; } = string.Empty;
+        public string UserName { get; set; }
 
-        // Relacionamentos M - N
+        // Relacionamentos
 
-        /// <summary>
-        /// Lista dos artigos do Utilizador
-        /// </summary>
-        public ICollection<Gostos> ListaGostos { get; set; }
-
-        /// <summary>
-        /// Lista dos Recursos Multimédia do Utilizador
-        /// </summary>
-        public ICollection<Recursos> ListaRecursos { get; set; }
-
-        /// <summary>
-        /// Lista de Artigos Associados a Utilizadores
-        /// </summary>
-        public ICollection<Artigos> ListaArtigos { get; set;}
+        public ICollection<Artigos> ListaArtigos { get; set; } = [];
+        public ICollection<Recursos> ListaRecursos { get; set; } = [];
+        public ICollection<Gostos> ListaGostos { get; set; } = [];
     }
 }

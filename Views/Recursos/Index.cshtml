@@ -1,34 +1,38 @@
-﻿@model IEnumerable<GeoEspectro.Models.Recursos>
+@model IEnumerable<GeoEspectro.Models.Recursos>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Lista de Recursos</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Criar Novo</a>
 </p>
-<table class="table">
+
+<table class="table table-striped">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nome)
+                @Html.DisplayNameFor(model => model.First().Nome)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Data)
+                @Html.DisplayNameFor(model => model.First().Data)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Tipo)
+                @Html.DisplayNameFor(model => model.First().Tipo)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Local)
+                @Html.DisplayNameFor(model => model.First().Local)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Observacao)
+                @Html.DisplayNameFor(model => model.First().Ficheiro)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Utilizador)
+                @Html.DisplayNameFor(model => model.First().Observacao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Autor)
             </th>
             <th></th>
         </tr>
@@ -36,23 +40,30 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>@Html.DisplayFor(modelItem => item.Nome)</td>
+            <td>@Html.DisplayFor(modelItem => item.Data)</td>
+            <td>@Html.DisplayFor(modelItem => item.Tipo)</td>
+            <td>@Html.DisplayFor(modelItem => item.Local)</td>
+            <td>@Html.DisplayFor(modelItem => item.Ficheiro)</td>
+            <td>@Html.DisplayFor(modelItem => item.Observacao)</td>
+            <td>@Html.DisplayFor(modelItem => item.Autor.Nome)</td>
             <td>
-                @Html.DisplayFor(modelItem => item.Nome)
+                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Data)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tipo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Local)
-            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+                @Html.DisplayNameFor(model => model.Ficheiro)
+            </th>
             <td>
                 @Html.DisplayFor(modelItem => item.Observacao)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Utilizador.ID)
+                @Html.DisplayFor(modelItem => item.Autor.Nome)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

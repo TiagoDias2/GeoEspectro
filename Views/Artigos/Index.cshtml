@@ -1,0 +1,80 @@
+﻿@model GeoEspectro.Models.ViewModels.ArtigosIndexDTO
+
+@{
+    ViewData["Title"] = "Lista de Artigos";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Criar Novo Artigo</a>
+</p>
+
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <input type="text" name="searchString" value="@Model.SearchString"
+                   class="form-control" placeholder="Pesquisar por título..." />
+        </div>
+        <div class="col-md-4">
+            <select name="categoriaId" class="form-control">
+                <option value="">Todas as categorias</option>
+                @foreach (var cat in Model.Categorias)
+                {
+                    <option value="@cat.Value" selected="@(Model.CategoriaId == cat.Value ? "selected" : null)">
+                        @cat.Text
+                    </option>
+                }
+            </select>
+
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Artigos.First().Titulo)</th>
+            <th>@Html.DisplayNameFor(model => model.Artigos.First().Texto)</th>
+            <th>@Html.DisplayNameFor(model => model.Artigos.First().Data)</th>
+            <th>Categorias</th>
+            <th>Autor</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Artigos)
+        {
+            <tr>
+                <td>@item.Titulo</td>
+                <td>@item.Texto</td>
+                <td>@item.Data.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    @if (item.ListaCategorias?.Any() == true)
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var cat in item.ListaCategorias)
+                            {
+                                <li>@cat.Categoria.Categoria</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>(Sem categorias)</span>
+                    }
+                </td>
+                <td>@item.Autor?.Nome</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalhes</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Apagar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
