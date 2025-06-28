@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace GeoEspectro.Models
 {
@@ -8,7 +8,7 @@ namespace GeoEspectro.Models
     public class Categorias
     {
         /// <summary>
-        /// Identificador da class das Categorias
+        /// Identificador da classe das Categorias
         /// </summary>
         [Key]
         public int Id { get; set; }
@@ -16,12 +16,13 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Nome das categorias dos artigos
         /// </summary>
+        [Required(ErrorMessage = "A {0} é de preenchimento obrigatório")]
+        [StringLength(20)]
+        [Display(Name = "Categoria")]
         public string Categoria { get; set; } = "";
 
-        // Relacionamento M - N
-
         /// <summary>
-        /// Lista dos artigos associados ás categorias
+        /// Lista dos artigos associados às categorias
         /// </summary>
         public ICollection<ArtigosCategoria> ListaArtigos { get; set; } = [];
     }

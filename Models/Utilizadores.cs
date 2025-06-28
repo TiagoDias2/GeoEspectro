@@ -1,64 +1,78 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GeoEspectro.Models
 {
     /// <summary>
-    /// Utilizadores não anonimos da aplicação 
+    /// Utilizadores não anónimos da aplicação 
     /// </summary>
     public class Utilizadores
     {
-
         /// <summary>
-        /// Identificador da class do utilizador
+        /// Identificador da classe do utilizador
         /// </summary>
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         /// <summary>
         /// Nome do Utilizador
         /// </summary>
-        public string Nome { get; set; } = "";
+        [Display(Name = "Nome")]
+        [StringLength(50)]
+        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
+        public string Nome { get; set; }
 
         /// <summary>
         /// Morada do Utilizador
         /// </summary>
-        public string? Morada { get; set; }
+        [Display(Name = "Morada")]
+        [StringLength(50)]
+        public string Morada { get; set; }
 
         /// <summary>
         /// Código Postal do Utilizador
         /// </summary>
-        public string? CodPostal { get; set; }
+        [Display(Name = "Código Postal")]
+        [StringLength(50)]
+        [RegularExpression("[1-9][0-9]{3}-[0-9]{3} [A-Za-z ]+",
+            ErrorMessage = "No {0} só são aceites algarismos e letras inglesas.")]
+        public string CodPostal { get; set; }
 
         /// <summary>
         /// País do Utilizador
         /// </summary>
-        public string? Pais { get; set; }
+        [Display(Name = "País")]
+        [StringLength(50)]
+        public string Pais { get; set; }
 
         /// <summary>
-        /// Numero de Identificação Fiscal do Utilizador
+        /// Número de Identificação Fiscal
         /// </summary>
-        public string NIF { get; set; }
+        [Display(Name = "NIF")]
+        [StringLength(9)]
+        [RegularExpression("[0-9]{9}", ErrorMessage = "O {0} deve conter exatamente 9 dígitos.")]
+        public string Nif { get; set; }
 
         /// <summary>
-        /// Número do dispositivo protátil do Utilizador
+        /// Número de Telemóvel
         /// </summary>
-        public string? Telemovel { get; set; }
-
-        // Relacionamentos M - N
-
-        /// <summary>
-        /// Lista dos artigos do Utilizador
-        /// </summary>
-        public ICollection<Gostos> ListaGostos { get; set; } = [];
+        [Display(Name = "Telemóvel")]
+        [StringLength(18)]
+        [RegularExpression(@"9[1236][0-9]{7}", ErrorMessage = "O número de telemóvel deve ser válido.")]
+        public string Telemovel { get; set; }
 
         /// <summary>
-        /// Lista dos Recursos Multimédia do Utilizador
+        /// Nome de utilizador (ligação à autenticação)
         /// </summary>
-        public ICollection<Recursos> ListaRecursos { get; set; } = [];
+        [Display(Name = "Username")]
+        [StringLength(50)]
+        public string UserName { get; set; }
 
-        /// <summary>
-        /// Lista de Artigos Associados a Utilizadores
-        /// </summary>
+        // Relacionamentos
+
         public ICollection<Artigos> ListaArtigos { get; set; } = [];
+        public ICollection<Recursos> ListaRecursos { get; set; } = [];
+        public ICollection<Gostos> ListaGostos { get; set; } = [];
     }
 }
