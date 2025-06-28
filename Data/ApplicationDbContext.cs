@@ -22,10 +22,10 @@ namespace GeoEspectro.Data
 
             // Relacionamento Utilizadores -> ApplicationUser
             builder.Entity<Utilizadores>()
-                .HasOne(u => u.IdentityUser)
-                .WithOne() // ou .WithOne(a => a.Utilizador) se desejar navegação reversa
-                .HasForeignKey<Utilizadores>(u => u.IdentityUserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                   .HasOne(u => u.IdentityUser)
+                   .WithOne()
+                   .HasForeignKey<Utilizadores>(u => u.IdentityUserId)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
