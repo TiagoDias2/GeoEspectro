@@ -62,13 +62,3 @@ namespace GeoEspectro.Models
         public ICollection<Detalhes> ListaRecursos { get; set; } = [];
     }
 }
-
-
-        /// <summary>
-        /// Lista dos artigos que compõem os Recursos
-        /// </summary>
-        public ICollection<Detalhes> ListaRecursos { get; set; } = [];
-
-        //public ICollection<Utilizadores> ListaUtilizadores { get; set; }
-    }
-}
