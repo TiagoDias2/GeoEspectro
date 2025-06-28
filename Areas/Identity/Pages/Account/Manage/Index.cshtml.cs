@@ -1,15 +1,12 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using GeoEspectro.Data;
+using Microsoft.EntityFrameworkCore;
+using GeoEspectro.Models;
 
 namespace GeoEspectro.Areas.Identity.Pages.Account.Manage
 {
@@ -18,51 +15,48 @@ namespace GeoEspectro.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<IndexModel> _logger;
-
+        private readonly ApplicationDbContext _context;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<IndexModel> logger)
+            ILogger<IndexModel> logger,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string Username { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            [Display(Name = "Nome")]
+            public string Nome { get; set; }
+
+            [Display(Name = "Morada")]
+            public string Morada { get; set; }
+
+            [Display(Name = "Código Postal")]
+            public string CodPostal { get; set; }
+
+            [Display(Name = "País")]
+            public string Pais { get; set; }
+
+            [Display(Name = "NIF")]
+            public string Nif { get; set; }
+
+            [Display(Name = "Telemóvel")]
+            public string Telemovel { get; set; }
+
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -70,12 +64,19 @@ namespace GeoEspectro.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
+            var utilizador = await _context.Utilizadores
+                .FirstOrDefaultAsync(u => u.IdentityUserId == user.Id);
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                Nome = utilizador?.Nome,
+                Morada = utilizador?.Morada,
+                CodPostal = utilizador?.CodPostal,
+                Pais = utilizador?.Pais,
+                Nif = utilizador?.Nif,
+                Telemovel = utilizador?.Telemovel ?? phoneNumber // fallback se não houver
             };
         }
 
@@ -101,23 +102,52 @@ namespace GeoEspectro.Areas.Identity.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
+                foreach (var entry in ModelState)
+                {
+                    foreach (var error in entry.Value.Errors)
+                    {
+                        _logger.LogError($"Erro em {entry.Key}: {error.ErrorMessage}");
+                    }
+                }
+
                 await LoadAsync(user);
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+
+            var utilizador = await _context.Utilizadores
+                .FirstOrDefaultAsync(u => u.IdentityUserId == user.Id);
+
+            if (utilizador == null)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
+                utilizador = new Utilizadores
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
+                    IdentityUserId = user.Id,
+                    Nome = Input.Nome,
+                    Morada = Input.Morada,
+                    CodPostal = Input.CodPostal,
+                    Pais = Input.Pais,
+                    Nif = Input.Nif,
+                    Telemovel = Input.Telemovel,
+                    UserName = user.UserName
+                };
+                _context.Utilizadores.Add(utilizador);
+            }
+            else
+            {
+                utilizador.Nome = Input.Nome;
+                utilizador.Morada = Input.Morada;
+                utilizador.CodPostal = Input.CodPostal;
+                utilizador.Pais = Input.Pais;
+                utilizador.Nif = Input.Nif;
+                utilizador.Telemovel = Input.Telemovel;
+                _context.Update(utilizador);
             }
 
+            await _context.SaveChangesAsync();
+
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "O seu perfil foi atualizado com sucesso.";
             return RedirectToPage();
         }
     }
