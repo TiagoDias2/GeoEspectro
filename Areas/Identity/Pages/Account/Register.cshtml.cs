@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -104,78 +104,79 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-           if (ModelState.IsValid)
-{
-    var user = CreateUser();
-    await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-    await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+            if (ModelState.IsValid)
+            {
+                var user = CreateUser();
+                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-    var result = await _userManager.CreateAsync(user, Input.Password);
+                var result = await _userManager.CreateAsync(user, Input.Password);
 
-    if (result.Succeeded)
-    {
-        _logger.LogInformation("User created a new account with password.");
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User created a new account with password.");
 
-        // Agora criamos o Utilizadores com o user.Id
-        var novoUtilizador = new Utilizadores
-        {
-            Nome = Input.Nome,
-            Morada = Input.Morada,
-            CodPostal = Input.CodPostal,
-            Pais = Input.Pais,
-            Nif = Input.Nif,
-            Telemovel = Input.Telemovel,
-            UserName = Input.Email,
-            IdentityUserId = user.Id // FK para ApplicationUser
-        };
+                    // Agora criamos o Utilizadores com o user.Id
+                    var novoUtilizador = new Utilizadores
+                    {
+                        Nome = Input.Nome,
+                        Morada = Input.Morada,
+                        CodPostal = Input.CodPostal,
+                        Pais = Input.Pais,
+                        Nif = Input.Nif,
+                        Telemovel = Input.Telemovel,
+                        UserName = Input.Email,
+                        IdentityUserId = user.Id // FK para ApplicationUser
+                    };
 
-        try
-        {
-            _context.Utilizadores.Add(novoUtilizador);
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            var innerMessage = ex.InnerException?.Message ?? ex.Message;
-            // Se falhar, desfaz o ApplicationUser
-            await _userManager.DeleteAsync(user);
-            ModelState.AddModelError(string.Empty, $"Erro ao salvar dados do utilizador: {innerMessage}");
+                    try
+                    {
+                        _context.Utilizadores.Add(novoUtilizador);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        var innerMessage = ex.InnerException?.Message ?? ex.Message;
+                        // Se falhar, desfaz o ApplicationUser
+                        await _userManager.DeleteAsync(user);
+                        ModelState.AddModelError(string.Empty, $"Erro ao salvar dados do utilizador: {innerMessage}");
+                        return Page();
+                    }
+
+                    await _userManager.SetPhoneNumberAsync(user, Input.Telemovel);
+
+                    var userId = await _userManager.GetUserIdAsync(user);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var callbackUrl = Url.Page(
+                        "/Account/ConfirmEmail",
+                        pageHandler: null,
+                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                        protocol: Request.Scheme);
+
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirmação de email",
+                        $"Por favor confirme a sua conta <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicando aqui</a>.");
+
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
+                    }
+                    else
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl);
+                    }
+                }
+
+                // Erros no Identity
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
             return Page();
         }
-
-        await _userManager.SetPhoneNumberAsync(user, Input.Telemovel);
-
-        var userId = await _userManager.GetUserIdAsync(user);
-        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        var callbackUrl = Url.Page(
-            "/Account/ConfirmEmail",
-            pageHandler: null,
-            values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-            protocol: Request.Scheme);
-
-        await _emailSender.SendEmailAsync(Input.Email, "Confirmação de email",
-            $"Por favor confirme a sua conta <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicando aqui</a>.");
-
-        if (_userManager.Options.SignIn.RequireConfirmedAccount)
-        {
-            return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
-        }
-        else
-        {
-            await _signInManager.SignInAsync(user, isPersistent: false);
-            return LocalRedirect(returnUrl);
-        }
-    }
-
-    // Erros no Identity
-    foreach (var error in result.Errors)
-    {
-        ModelState.AddModelError(string.Empty, error.Description);
-    }
-}
-
-return Page();
 
 
 
