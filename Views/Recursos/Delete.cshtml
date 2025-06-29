@@ -1,63 +1,42 @@
 @model GeoEspectro.Models.Recursos
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Apagar Recurso";
 }
 
-<h1>Apagar</h1>
+<h1 class="text-danger fw-bold mb-4">@ViewData["Title"]</h1>
 
-<h3>Tens a certeza que queres apagar este recurso?</h3>
-<div>
-    <h4>Recursos</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Data)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Data)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Tipo)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tipo)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Local)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Local)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Ficheiro)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Ficheiro)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Observacao)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Observacao)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Autor)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Autor.Nome)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete" method="post">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Apagar" class="btn btn-danger" /> |
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-    </form>
+<h4 class="mb-3">Tens a certeza que queres apagar este recurso?</h4>
+
+<div class="card border-danger mb-4">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Nome</dt>
+            <dd class="col-sm-9">@Model.Nome</dd>
+
+            <dt class="col-sm-3">Data</dt>
+            <dd class="col-sm-9">@Model.Data.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            <dt class="col-sm-3">Tipo</dt>
+            <dd class="col-sm-9">@Model.Tipo</dd>
+
+            <dt class="col-sm-3">Local</dt>
+            <dd class="col-sm-9">@Model.Local</dd>
+
+            <dt class="col-sm-3">Ficheiro</dt>
+            <dd class="col-sm-9">@Model.Ficheiro</dd>
+
+            <dt class="col-sm-3">Observação</dt>
+            <dd class="col-sm-9">@Model.Observacao</dd>
+
+            <dt class="col-sm-3">Autor</dt>
+            <dd class="col-sm-9">@Model.Autor?.Nome</dd>
+        </dl>
+    </div>
 </div>
+
+<form asp-action="Delete" method="post" class="d-flex gap-2">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Apagar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

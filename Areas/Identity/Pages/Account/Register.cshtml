@@ -4,17 +4,16 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="mb-4">@ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-6">
+<div class="row g-5">
+    <div class="col-lg-6 col-md-12">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Crie uma nova conta</h2>
-            <hr />
+            <h2 class="h4 mb-3">Crie uma nova conta</h2>
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
                 <label asp-for="Input.Email"></label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
@@ -33,71 +32,73 @@
 
             <!-- Campos adicionais -->
             <div class="form-floating mb-3">
-                <input asp-for="Input.Nome" class="form-control" placeholder="Nome completo" />
+                <input asp-for="Input.Nome" class="form-control" placeholder="Nome completo" autocomplete="name" />
                 <label asp-for="Input.Nome"></label>
                 <span asp-validation-for="Input.Nome" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.Morada" class="form-control" placeholder="Morada" />
+                <input asp-for="Input.Morada" class="form-control" placeholder="Morada" autocomplete="street-address" />
                 <label asp-for="Input.Morada"></label>
                 <span asp-validation-for="Input.Morada" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.CodPostal" class="form-control" placeholder="Código Postal" />
+                <input asp-for="Input.CodPostal" class="form-control" placeholder="Código Postal" autocomplete="postal-code" />
                 <label asp-for="Input.CodPostal"></label>
                 <span asp-validation-for="Input.CodPostal" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.Pais" class="form-control" placeholder="País" />
+                <input asp-for="Input.Pais" class="form-control" placeholder="País" autocomplete="country-name" />
                 <label asp-for="Input.Pais"></label>
                 <span asp-validation-for="Input.Pais" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.Nif" class="form-control" placeholder="NIF" />
+                <input asp-for="Input.Nif" class="form-control" placeholder="NIF" autocomplete="off" />
                 <label asp-for="Input.Nif"></label>
                 <span asp-validation-for="Input.Nif" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.Telemovel" class="form-control" placeholder="Telemóvel" />
+                <input asp-for="Input.Telemovel" class="form-control" placeholder="Telemóvel" autocomplete="tel" />
                 <label asp-for="Input.Telemovel"></label>
                 <span asp-validation-for="Input.Telemovel" class="text-danger"></span>
             </div>
 
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Registar</button>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mb-2">Registar</button>
+
+            <p class="mt-3 text-center">
+                Já tem conta? <a asp-page="/Account/Login" asp-route-returnUrl="@Model.ReturnUrl">Inicie sessão aqui</a>.
+            </p>
         </form>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-lg-6 col-md-12">
         <section>
-            <h3>Usar outro serviço</h3>
+            <h3 class="h5 mb-3">Entrar com outro serviço</h3>
             <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            Nenhum serviço externo configurado. Veja este <a href="https://go.microsoft.com/fwlink/?LinkID=532715">artigo</a>.
-                        </p>
+            @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+            {
+                <div>
+                    <p>
+                        Nenhum serviço externo configurado. Veja este <a href="https://go.microsoft.com/fwlink/?LinkID=532715">artigo</a>.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div class="d-grid gap-2">
+                        @foreach (var provider in Model.ExternalLogins!)
+                        {
+                            <button type="submit" class="btn btn-outline-dark" name="provider" value="@provider.Name">
+                                Entrar com @provider.DisplayName
+                            </button>
+                        }
                     </div>
-                }
-                else
-                {
-                    <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                        <div>
-                            @foreach (var provider in Model.ExternalLogins!)
-                            {
-                                <button type="submit" class="btn btn-outline-dark" name="provider" value="@provider.Name">
-                                    Entrar com @provider.DisplayName
-                                </button>
-                            }
-                        </div>
-                    </form>
-                }
+                </form>
             }
         </section>
     </div>

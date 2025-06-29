@@ -1,129 +1,111 @@
 ﻿@model GeoEspectro.Models.Artigos
 
 @{
-    ViewData["Title"] = "Detalhes do Artigo";
+    ViewData["Title"] = Model.Titulo;
 }
 
-<h1>@Model.Titulo</h1>
+<div class="container my-4">
+    <article class="bg-white p-4 shadow-sm rounded">
+        <header class="mb-4">
+            <h1 class="display-5 fw-bold">@Model.Titulo</h1>
+            <p class="text-muted mb-1">
+                Publicado por <strong>@Model.Autor?.Nome</strong> em @Model.Data.ToString("dd/MM/yyyy HH:mm")
+            </p>
 
-<hr />
-<dl class="row">
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Titulo)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Titulo)
-    </dd>
+            @if (Model.ListaCategorias != null && Model.ListaCategorias.Any())
+            {
+                <div>
+                    <small class="text-muted">Categorias:</small>
+                    @foreach (var categoria in Model.ListaCategorias)
+                    {
+                        <span class="badge bg-primary me-1">@categoria.Categoria.Categoria</span>
+                    }
+                </div>
+            }
+        </header>
 
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Texto)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Texto)
-    </dd>
+        <section class="mb-4">
+            <p class="fs-5" style="white-space: pre-line;">
+                @Model.Texto
+            </p>
+        </section>
 
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Data)
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Data.ToString("dd/MM/yyyy HH:mm")
-    </dd>
-
-    <dt class="col-sm-2">
-        Categorias
-    </dt>
-    <dd class="col-sm-10">
-        @if (Model.ListaCategorias != null && Model.ListaCategorias.Any())
+        @if (Model.ListaRecursos != null && Model.ListaRecursos.Any())
         {
-            <ul>
-                @foreach (var categoria in Model.ListaCategorias)
-                {
-                    <li>@categoria.Categoria.Categoria</li>
-                }
-            </ul>
+            <section class="mb-4">
+                <h4 class="mb-3">Multimédia</h4>
+                <div id="carouselRecursos" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @{
+                            var recursosOrdenados = Model.ListaRecursos
+                            .OrderByDescending(r => r.Principal).ToList();
+                            int index = 0;
+
+                            foreach (var detalhe in recursosOrdenados)
+                            {
+                                var ativo = index == 0 ? "active" : "";
+                                var ficheiro = detalhe.Recurso.Ficheiro ?? "";
+                                var extensao = System.IO.Path.GetExtension(ficheiro).ToLowerInvariant();
+                                var isVideo = extensao == ".mp4" || extensao == ".webm" || extensao == ".ogg";
+                                var caminho = isVideo
+                                ? Url.Content($"~/videos/{ficheiro}")
+                                : Url.Content($"~/imagens/{ficheiro}");
+
+                                <div class="carousel-item @ativo text-center">
+                                    @if (isVideo)
+                                    {
+                                        <video controls width="100%" class="rounded shadow-sm">
+                                            <source src="@caminho" type="video/@extensao.TrimStart('.')">
+                                            O seu navegador não suporta vídeo.
+                                        </video>
+                                    }
+                                    else
+                                    {
+                                        <img src="@caminho" class="d-block mx-auto rounded shadow-sm" style="max-height: 500px;" alt="@detalhe.Recurso.Nome" />
+                                    }
+
+                                    <div style="
+                                     position: absolute;
+                                     bottom: 10px;
+                                     left: 10px;
+                                     background-color: rgba(0,0,0,0.6);
+                                     color: white;
+                                     padding: 8px 12px;
+                                     border-radius: 6px;
+                                     max-width: 90%;
+                                     font-size: 0.875rem;">
+                                        <strong>@detalhe.Recurso.Nome</strong><br />
+                                        <span>@detalhe.Recurso.Observacao</span>
+                                    </div>
+                                </div>
+
+                                index++;
+                            }
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselRecursos" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselRecursos" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Seguinte</span>
+                    </button>
+                </div>
+            </section>
         }
         else
         {
-            <span>(Sem categorias associadas)</span>
+            <p class="text-muted">(Sem recursos associados)</p>
         }
-    </dd>
 
-    <dt class="col-sm-2">
-        Autor
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Autor.Nome)
-    </dd>
-</dl>
-
-<hr />
-
-@if (Model.ListaRecursos != null && Model.ListaRecursos.Any())
-{
-    <h3>Multimédia</h3>
-    <div id="carouselRecursos" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            @{
-                var recursosOrdenados = Model.ListaRecursos
-                .OrderByDescending(r => r.Principal) // mostra o principal primeiro
-                .ToList();
-                int index = 0;
-
-                foreach (var detalhe in recursosOrdenados)
-                {
-                    var ativo = index == 0 ? "active" : "";
-                    var ficheiro = detalhe.Recurso.Ficheiro ?? "";
-                    var extensao = System.IO.Path.GetExtension(ficheiro).ToLowerInvariant();
-                    var isVideo = extensao == ".mp4" || extensao == ".webm" || extensao == ".ogg";
-                    var caminho = isVideo
-                    ? Url.Content($"~/videos/{ficheiro}")
-                    : Url.Content($"~/imagens/{ficheiro}");
-
-                    <div class="carousel-item @ativo text-center">
-                        @if (isVideo)
-                        {
-                            <video id="meuVideo"
-                                   class="video-js vjs-default-skin"
-                                   controls
-                                   width="100%"
-                                   data-setup="{}"
-                                   alt="@detalhe.Recurso.Nome">
-                                <source src="@caminho" type="video/@extensao.TrimStart('.')">
-                                O seu navegador não suporta a reprodução de vídeo.
-                            </video>
-                        }
-                        else
-                        {
-                            <img src="@caminho" class="d-block mx-auto" style="max-height: 500px;" alt="@detalhe.Recurso.Nome" />
-                        }
-
-                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
-                            <h5>@detalhe.Recurso.Nome</h5>
-                            <p>@detalhe.Recurso.Observacao</p>
-                        </div>
-                    </div>
-
-                    index++;
-                }
-            }
-        </div>
-
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselRecursos" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselRecursos" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Seguinte</span>
-        </button>
-    </div>
-}
-else
-{
-    <p>(Sem recursos associados)</p>
-}
-
-<div>
-    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Editar</a>
-    <a class="btn btn-secondary" asp-action="Index">Voltar à Lista</a>
+        <footer class="mt-4">
+            <a class="btn btn-primary me-2" asp-action="Edit" asp-route-id="@Model.Id">
+                <i class="bi bi-pencil-square"></i> Editar
+            </a>
+            <a class="btn btn-secondary" asp-action="Index">
+                <i class="bi bi-arrow-left"></i> Voltar à Lista
+            </a>
+        </footer>
+    </article>
 </div>
