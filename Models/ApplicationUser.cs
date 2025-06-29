@@ -8,11 +8,6 @@ namespace GeoEspectro.Data
 {
     public class ApplicationUser : IdentityUser
     {
-        // Chave estrangeira
-        [ForeignKey(nameof(Utilizador))]
-        public int? UtilizadoresID { get; set; }
 
-        // Propriedade de navegação
-        public Utilizadores Utilizador { get; set; }
     }
 }

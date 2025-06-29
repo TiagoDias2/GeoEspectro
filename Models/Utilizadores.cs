@@ -1,6 +1,7 @@
 using GeoEspectro.Data;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace GeoEspectro.Models
 {
@@ -16,33 +17,21 @@ namespace GeoEspectro.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
-        /// <summary>
-        /// Nome do Utilizador
-        /// </summary>
         [Display(Name = "Nome")]
         [StringLength(50)]
         [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
         public string Nome { get; set; }
 
-        /// <summary>
-        /// Morada do Utilizador
-        /// </summary>
         [Display(Name = "Morada")]
         [StringLength(50)]
         public string Morada { get; set; }
 
-        /// <summary>
-        /// Código Postal do Utilizador
-        /// </summary>
         [Display(Name = "Código Postal")]
         [StringLength(50)]
         [RegularExpression("[1-9][0-9]{3}-[0-9]{3} [A-Za-z ]+",
             ErrorMessage = "No {0} só são aceites algarismos e letras inglesas.")]
         public string CodPostal { get; set; }
 
-        /// <summary>
-        /// País do Utilizador
-        /// </summary>
         [Display(Name = "País")]
         [StringLength(50)]
         public string Pais { get; set; }
@@ -66,14 +55,21 @@ namespace GeoEspectro.Models
         /// <summary>
         /// Nome de utilizador (ligação à autenticação)
         /// </summary>
-        [Display(Name = "Username")]
         [StringLength(50)]
+        [Display(Name = "Username")]
         public string UserName { get; set; }
 
-        public ApplicationUser ApplicationUser { get; set; }
+        /// <summary>
+        /// Chave estrangeira para ApplicationUser
+        /// </summary>
+        [Required]
+        [StringLength(450)]
+        public string IdentityUserId { get; set; }
+
+        [ForeignKey("IdentityUserId")]
+        public ApplicationUser IdentityUser { get; set; }
 
         // Relacionamentos
-
         public ICollection<Artigos> ListaArtigos { get; set; } = [];
         public ICollection<Recursos> ListaRecursos { get; set; } = [];
         public ICollection<Gostos> ListaGostos { get; set; } = [];

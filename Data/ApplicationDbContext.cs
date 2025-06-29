@@ -7,9 +7,7 @@ namespace GeoEspectro.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
+            : base(options) { }
 
         public DbSet<Utilizadores> Utilizadores { get; set; }
         public DbSet<Artigos> Artigos { get; set; }
@@ -17,22 +15,23 @@ namespace GeoEspectro.Data
         public DbSet<Recursos> Recursos { get; set; }
         public DbSet<Categorias> Categorias { get; set; }
         public DbSet<Detalhes> Detalhes { get; set; }
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<ApplicationUser>()
-                .HasOne(a => a.Utilizador)
+
+            builder.Entity<Utilizadores>()
+                .HasOne(u => u.IdentityUser)
                 .WithOne()
-                .HasForeignKey<ApplicationUser>(a => a.UtilizadoresID)
+                .HasForeignKey<Utilizadores>(u => u.IdentityUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             // Relacionamento Utilizadores -> Artigos (1:N)
             builder.Entity<Artigos>()
             .HasIndex(a => a.AutorFK);
 
-            // Aqui podes adicionar outras configurações do modelo, se necessário
+
         }
     }
 }
