@@ -44,23 +44,25 @@
 {
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header bg-light fw-semibold">Visualização</div>
-        <div class="card-body text-center">
+        <div class="card-body">
             @if (isVideo)
             {
-                <video id="meuVideo"
-                       class="video-js vjs-default-skin"
-                       controls
-                       preload="auto"
-                       width="100%"
-                       style="max-width: 640px; height: auto"
-                       data-setup="{}">
-                    <source src="@caminho" type="video/@extensao.TrimStart('.')">
-                    O seu navegador não suporta a reprodução de vídeo.
-                </video>
+                <div class="ratio ratio-16x9">
+                    <video id="meuVideo"
+                           class="video-js vjs-default-skin"
+                           controls
+                           preload="auto"
+                           data-setup='{"fluid": true, "aspectRatio": "16:9"}'>
+                        <source src="@caminho" type="video/@extensao.TrimStart('.')">
+                        O seu navegador não suporta a reprodução de vídeo.
+                    </video>
+                </div>
             }
             else
             {
-                <img src="@caminho" alt="Imagem" class="img-fluid rounded border" style="max-height: 500px;" />
+                <div class="text-center">
+                    <img src="@caminho" alt="Imagem" class="img-fluid rounded border" style="max-height: 500px;" />
+                </div>
             }
         </div>
     </div>

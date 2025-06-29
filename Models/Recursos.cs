@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GeoEspectro.Models
@@ -10,7 +11,7 @@ namespace GeoEspectro.Models
         /// </summary>
         [Key]
         public int Id { get; set; }
-        [Required]
+
         [StringLength(255)]
         public string Caminho { get; set; } = "";
         /// <summary>
