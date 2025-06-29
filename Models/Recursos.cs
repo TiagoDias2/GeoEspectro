@@ -10,6 +10,9 @@ namespace GeoEspectro.Models
         /// </summary>
         [Key]
         public int Id { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Caminho { get; set; } = "";
         /// <summary>
         /// Nome do Recurso
         /// </summary>
@@ -18,6 +21,7 @@ namespace GeoEspectro.Models
         /// Data de Publicação dos Recursos
         /// </summary>
         public DateTime Data { get; set; }
+        
         /// <summary>
         /// Tipo de Recursos Multimédia
         /// </summary>

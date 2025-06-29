@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "GeoEspectro";
 }
+@model List<GeoEspectro.Models.Artigos>
 
 <div class="container text-center mt-5">
     <h1 class="display-3 mb-4">GeoEspectro</h1>
@@ -21,34 +22,20 @@
         </select>
     </div>
 
-    <div class="container mt-5">
-        <h2 class="mb-4 text-center">Notícias</h2>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            @* Exemplo de notícia – idealmente este bloco seria repetido dinamicamente *@
-            <div class="col">
-                <div class="card h-100">
-                    <img src="/images/dinossauro.jpg" class="card-img-top" alt="Imagem da notícia">
-                    <div class="card-body">
-                        <h5 class="card-title">Descoberta de Fóssil</h5>
-                        <p class="card-text">Pesquisadores encontraram um novo fóssil de dinossauro na região sul...</p>
-                        <a href="/Noticia/1" class="btn btn-primary">Ler mais</a>
-                    </div>
+    @foreach (var artigo in Model)
+    {
+        var imagem = artigo.ListaRecursos
+        .FirstOrDefault(d => d.Principal)?.Recurso?.Caminho;
+        <div class="col">
+            <div class="card h-100">
+                <img src="@imagem" class="card-img-top" alt="Imagem do artigo" />
+                <div class="card-body">
+                    <h5 class="card-title">@artigo.Titulo</h5>
+                    <p class="card-text">@artigo.Texto.Substring(0, Math.Min(100, artigo.Texto.Length))...</p>
+                    <a href="/Artigos/Details/@artigo.Id" class="btn btn-primary">Ler mais</a>
                 </div>
             </div>
-
-            <div class="col">
-                <div class="card h-100">
-                    <img src="/images/planta.jpg" class="card-img-top" alt="Imagem da notícia">
-                    <div class="card-body">
-                        <h5 class="card-title">Nova Espécie de Planta</h5>
-                        <p class="card-text">Uma espécie pré-histórica de planta foi identificada em fósseis milenares...</p>
-                        <a href="/Noticia/2" class="btn btn-primary">Ler mais</a>
-                    </div>
-                </div>
-            </div>
-
-            @* Adicione mais blocos conforme necessário ou use um loop Razor *@
         </div>
-    </div>
+    }
 
 </div>
