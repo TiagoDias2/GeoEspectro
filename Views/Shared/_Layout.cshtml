@@ -48,6 +48,14 @@
                                 <i class="bi bi-folder2-open"></i> Recursos
                             </a>
                         </li>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Utilizadores" asp-action="Index">
+                                    <i class="bi bi-people"></i> Utilizadores
+                                </a>
+                            </li>
+                        }
                     </ul>
 
                     <partial name="_LoginPartial" />
