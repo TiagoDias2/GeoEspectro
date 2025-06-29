@@ -18,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>() // Adiciona suporte a roles
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
@@ -26,18 +27,9 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 20 * 1024 * 1024; //20MB
 });
 
-// Eliminar a proteção de 'ciclos' qd se faz uma pesquisa que envolva um relacionamento 1-N em Linq
-// https://code-maze.com/aspnetcore-handling-circular-references-when-working-with-json/
-// https://marcionizzola.medium.com/como-resolver-jsonexception-a-possible-object-cycle-was-detected-27e830ea78e5
 builder.Services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-// *******************************************************************
-// Instalar o package
-// Microsoft.AspNetCore.Authentication.JwtBearer
-//
-// using Microsoft.IdentityModel.Tokens;
-// *******************************************************************
 // JWT Settings
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
@@ -60,15 +52,14 @@ builder.Services.AddAuthentication(options => { })
        };
    });
 
-// declarar o serviço Signal R
 builder.Services.AddSignalR();
-
-// configuração do JWT
 builder.Services.AddScoped<TokenService>();
 
-// Adiciona o Swagger
-// builder.Services.AddEndpointsApiExplorer();   // necessária apenas para APIs mínimas. 
-// builder.Services.AddSwaggerGen();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+        policy.RequireClaim("IsAdmin", "true"));
+});
 
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -78,11 +69,9 @@ builder.Services.AddSwaggerGen(c => {
         Description = "API para gestão de categorias, recursos multimédia associados aos artigos publicados"
     });
 
-    // Caminho para o XML gerado
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
-
 });
 
 var app = builder.Build();
@@ -91,31 +80,68 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-
-    // inciar o 'midleware' do Swagger
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+
+// Criação das roles durante a inicialização
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    try
+    {
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        string[] roleNames = { "Admin", "User", "Editor" };
+
+        foreach (var roleName in roleNames)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+        }
+
+        // Opcional: Criar um usuário admin padrão
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        string adminEmail = "admin@example.com";
+        string adminPassword = "Admin@123";
+
+        if (await userManager.FindByEmailAsync(adminEmail) == null)
+        {
+            var adminUser = new ApplicationUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true
+            };
+
+            var createUser = await userManager.CreateAsync(adminUser, adminPassword);
+            if (createUser.Succeeded)
+            {
+                await userManager.AddToRoleAsync(adminUser, "Admin");
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ocorreu um erro ao criar as roles ou usuário admin");
+    }
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
-
-// cria uma 'ponte' entre o nosso serviço SignalR (GostosHub)
-// e o javascript do browser
 app.MapHub<GostosHub>("/gostoshub");
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

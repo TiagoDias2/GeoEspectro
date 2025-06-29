@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GeoEspectro.Data;
 using GeoEspectro.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GeoEspectro.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class CategoriasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -27,9 +29,12 @@ namespace GeoEspectro.Controllers.API
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Categorias>>> GetCategorias()
         {
-            return await _context.Categorias.ToListAsync();
+            return await _context.Categorias
+                .Include(c => c.ListaArtigos)
+                .ToListAsync();
         }
 
         // GET: api/Categorias/5

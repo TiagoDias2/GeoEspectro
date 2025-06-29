@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using GeoEspectro.Data;
+using System.Security.Claims;
 
 namespace GeoEspectro.Areas.Identity.Pages.Account
 {
@@ -115,11 +116,40 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    // Obter o utilizador após login bem-sucedido
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                    if (user != null)
+                    {
+                        // Verificar se o utilizador é admin (adaptar conforme sua lógica)
+                        bool isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+
+                        // Adicionar/remover claim de admin
+                        var existingClaims = await _userManager.GetClaimsAsync(user);
+                        var adminClaim = existingClaims.FirstOrDefault(c => c.Type == "IsAdmin");
+
+                        if (isAdmin)
+                        {
+                            if (adminClaim == null)
+                            {
+                                await _userManager.AddClaimAsync(user, new Claim("IsAdmin", "true"));
+                            }
+                        }
+                        else
+                        {
+                            if (adminClaim != null)
+                            {
+                                await _userManager.RemoveClaimAsync(user, adminClaim);
+                            }
+                        }
+
+                        // Atualizar cookie de autenticação com as claims atualizadas
+                        await _signInManager.RefreshSignInAsync(user);
+                    }
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
@@ -139,7 +169,6 @@ namespace GeoEspectro.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }
