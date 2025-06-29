@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using GeoEspectro.Models;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +21,20 @@ public class HomeController : Controller
     {
         var artigos = _context.Artigos
             .Include(a => a.ListaRecursos)
+            .Include(a => a.ListaCategorias)
+                .ThenInclude(ac => ac.Categoria)
             .Where(a =>
                 (string.IsNullOrEmpty(q) || a.Titulo.Contains(q)) &&
                 (string.IsNullOrEmpty(categoria) || a.ListaCategorias.Any(c => c.Categoria.Categoria == categoria))
             )
             .OrderByDescending(a => a.Data)
+            .ToList();
+
+        // 🔧 Atribuir as categorias para dropdown
+        ViewBag.Categorias = _context.Categorias
+            .Select(c => c.Categoria)
+            .Distinct()
+            .OrderBy(c => c)
             .ToList();
 
         return View(artigos);

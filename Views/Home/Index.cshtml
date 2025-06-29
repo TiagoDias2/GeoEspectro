@@ -6,36 +6,39 @@
 <div class="container text-center mt-5">
     <h1 class="display-3 mb-4">GeoEspectro</h1>
 
-    <form method="get" action="/Home/Index" class="d-flex justify-content-center mb-5">
-        <input name="q" class="form-control w-50" type="search" placeholder="Pesquisar..." aria-label="Pesquisar">
-        <button class="btn btn-primary ms-2" type="submit">Pesquisar</button>
+    <form method="get" action="/Home/Index" class="d-flex justify-content-center mb-5 w-100">
+        <input name="q" class="form-control w-50 me-2" type="search" placeholder="Pesquisar por título..."
+               aria-label="Pesquisar" value="@Context.Request.Query["q"]" />
+
+        <select name="categoria" class="form-select w-25 me-2" onchange="this.form.submit()">
+            <option value="">Todas as Categorias</option>
+            @foreach (var categoria in ViewBag.Categorias as List<string>)
+            {
+                <option value="@categoria" selected="@(Context.Request.Query["categoria"] == categoria ? "selected" : null)">
+                    @categoria
+                </option>
+            }
+        </select>
+
+        <button class="btn btn-primary" type="submit">Pesquisar</button>
     </form>
 
-    <div class="d-flex justify-content-center mb-5">
-        <select class="form-select w-25" onchange="location = this.value;">
-            <option value="/Home">Filtrar por Categoria</option>
-            <option value="/Home/Index?categoria=Geologia">Geologia</option>
-            <option value="/Home/Index?categoria=Dinossauros">Dinossauros</option>
-            <option value="/Home/Index?categoria=Descobrimentos">Descobrimentos</option>
-            <option value="/Home/Index?categoria=Fosseis">Fósseis</option>
-            <option value="/Home/Index?categoria=Plantas">Plantas</option>
-        </select>
-    </div>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var artigo in Model)
+        {
+            var imagem = artigo.ListaRecursos
+            .FirstOrDefault(d => d.Principal)?.Recurso?.Caminho;
 
-    @foreach (var artigo in Model)
-    {
-        var imagem = artigo.ListaRecursos
-        .FirstOrDefault(d => d.Principal)?.Recurso?.Caminho;
-        <div class="col">
-            <div class="card h-100">
-                <img src="@imagem" class="card-img-top" alt="Imagem do artigo" />
-                <div class="card-body">
-                    <h5 class="card-title">@artigo.Titulo</h5>
-                    <p class="card-text">@artigo.Texto.Substring(0, Math.Min(100, artigo.Texto.Length))...</p>
-                    <a href="/Artigos/Details/@artigo.Id" class="btn btn-primary">Ler mais</a>
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@imagem" class="card-img-top" alt="Imagem do artigo" />
+                    <div class="card-body">
+                        <h5 class="card-title">@artigo.Titulo</h5>
+                        <p class="card-text">@artigo.Texto.Substring(0, Math.Min(100, artigo.Texto.Length))...</p>
+                        <a href="/Artigos/Details/@artigo.Id" class="btn btn-primary">Ler mais</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-
+        }
+    </div>
 </div>
