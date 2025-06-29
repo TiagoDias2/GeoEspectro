@@ -1,24 +1,26 @@
 ﻿@model GeoEspectro.Models.Categorias
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Categoria";
 }
 
-<h1>Details</h1>
+<h1 class="mb-4">@ViewData["Title"]</h1>
 
-<div>
-    <h4>Categorias</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Categoria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Categoria)
-        </dd>
-    </dl>
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <h4 class="card-title text-primary">@Model.Categoria</h4>
+        <dl class="row mt-4">
+            <dt class="col-sm-3 text-muted">
+                Nome da Categoria
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Categoria)
+            </dd>
+        </dl>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning me-2">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
 </div>

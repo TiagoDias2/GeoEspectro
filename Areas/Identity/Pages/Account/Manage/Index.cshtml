@@ -1,7 +1,7 @@
 ﻿@page
 @model GeoEspectro.Areas.Identity.Pages.Account.Manage.IndexModel
 @{
-    ViewData["Title"] = "Manage your account";
+    ViewData["Title"] = "Gerir a sua conta";
     ViewData["ActivePage"] = "Index";
 }
 
@@ -14,39 +14,40 @@
         <form method="post">
             <div class="form-floating mb-3">
                 <input asp-for="Input.Nome" class="form-control" />
-                <label asp-for="Input.Nome" class="form-label"></label>
+                <label asp-for="Input.Nome" class="form-label">Nome</label>
                 <span asp-validation-for="Input.Nome" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
                 <input asp-for="Input.Morada" class="form-control" />
-                <label asp-for="Input.Morada" class="form-label"></label>
+                <label asp-for="Input.Morada" class="form-label">Morada</label>
                 <span asp-validation-for="Input.Morada" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
                 <input asp-for="Input.CodPostal" class="form-control" />
-                <label asp-for="Input.CodPostal" class="form-label"></label>
+                <label asp-for="Input.CodPostal" class="form-label">Código Postal</label>
                 <span asp-validation-for="Input.CodPostal" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
                 <input asp-for="Input.Pais" class="form-control" />
-                <label asp-for="Input.Pais" class="form-label"></label>
+                <label asp-for="Input.Pais" class="form-label">País</label>
                 <span asp-validation-for="Input.Pais" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
                 <input asp-for="Input.Nif" class="form-control" />
-                <label asp-for="Input.Nif" class="form-label"></label>
+                <label asp-for="Input.Nif" class="form-label">NIF</label>
                 <span asp-validation-for="Input.Nif" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
                 <input asp-for="Input.Telemovel" class="form-control" />
-                <label asp-for="Input.Telemovel" class="form-label"></label>
+                <label asp-for="Input.Telemovel" class="form-label">Telemóvel</label>
                 <span asp-validation-for="Input.Telemovel" class="text-danger"></span>
             </div>
+
             <button type="submit" class="btn btn-primary">Guardar</button>
         </form>
     </div>

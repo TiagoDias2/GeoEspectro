@@ -1,11 +1,23 @@
 ﻿@page
 @model DownloadPersonalDataModel
 @{
-    ViewData["Title"] = "Download Your Data";
+    ViewData["Title"] = "Transferir os Seus Dados Pessoais";
     ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
 
-<h3>@ViewData["Title"]</h3>
+<h3 class="mb-4">@ViewData["Title"]</h3>
+
+<div class="alert alert-info" role="alert">
+    <p>Ao clicar no botão abaixo, os seus dados pessoais serão preparados e descarregados num ficheiro JSON.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <button class="btn btn-primary btn-lg w-100" type="submit">Transferir os Meus Dados</button>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

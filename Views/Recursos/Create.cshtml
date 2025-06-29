@@ -1,57 +1,56 @@
-﻿@model GeoEspectro.Models.Recursos
+@model GeoEspectro.Models.Recursos
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Criar Recurso";
 }
 
-<h1>Create</h1>
+<h1 class="mb-4 fw-bold">@ViewData["Title"]</h1>
 
-<h4>Recursos</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Nome" class="form-label"></label>
                 <input asp-for="Nome" class="form-control" />
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
-@*             <div class="form-group">
-                <label asp-for="Tipo" class="control-label"></label>
-                <input asp-for="Tipo" class="form-control" />
-                <span asp-validation-for="Tipo" class="text-danger"></span>
-            </div> *@
-            <div class="form-group">
-                <label asp-for="Local" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="Local" class="form-label"></label>
                 <input asp-for="Local" class="form-control" />
                 <span asp-validation-for="Local" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Ficheiro" class="control-label"></label>
-                @* <input asp-for="Fotografia" class="form-control" /> *@
-                <input type="file"
-                       accept=".png,.jpeg, .mp4, .ogg, .webm"
-                       name="imagemFoto"
-                       class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="Ficheiro" class="form-label">Ficheiro (imagem ou vídeo)</label>
+                <input type="file" accept=".png,.jpeg,.mp4,.ogg,.webm" name="imagemFoto" class="form-control" />
                 <span asp-validation-for="Ficheiro" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Observacao" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="Observacao" class="form-label"></label>
                 <input asp-for="Observacao" class="form-control" />
                 <span asp-validation-for="Observacao" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="mb-3">
+                <label asp-for="AutorFK" class="form-label">Autor</label>
+                <select asp-for="AutorFK" class="form-select" asp-items="ViewBag.AutorFK">
+                    <option value="0">Escolha um utilizador</option>
+                </select>
+                <span asp-validation-for="AutorFK" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">← Voltar à Lista</a>
+                <input type="submit" value="Criar Recurso" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

@@ -1,64 +1,58 @@
 @model GeoEspectro.Models.Recursos
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Recurso";
+    var ficheiro = Model.Ficheiro ?? "";
+    var extensao = System.IO.Path.GetExtension(ficheiro).ToLowerInvariant();
+    var isVideo = extensao == ".mp4" || extensao == ".webm" || extensao == ".ogg";
+    var caminho = Url.Content(isVideo ? $"~/videos/{ficheiro}" : $"~/imagens/{ficheiro}");
 }
 
 <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-<h1>Detalhes</h1>
-
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
-<div>
-    <h4>Recurso</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
+<h1 class="mb-4 text-primary fw-bold">@ViewData["Title"]</h1>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Data)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Data)
-        </dd>
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-light fw-semibold">
+        Informação do Recurso
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Nome</dt>
+            <dd class="col-sm-9">@Model.Nome</dd>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Tipo)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tipo)
-        </dd>
+            <dt class="col-sm-3">Data</dt>
+            <dd class="col-sm-9">@Model.Data.ToString("dd/MM/yyyy HH:mm")</dd>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Local)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Local)
-        </dd>
+            <dt class="col-sm-3">Tipo</dt>
+            <dd class="col-sm-9">@Model.Tipo</dd>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Ficheiro)
-        </dt>
-        <dd class="col-sm-10">
-            @{
-                var ficheiro = Model.Ficheiro ?? "";
-                var extensao = System.IO.Path.GetExtension(ficheiro).ToLowerInvariant();
-                var caminho = Url.Content($"~/videos/{ficheiro}"); // mudar se a pasta for outra
-            }
+            <dt class="col-sm-3">Local</dt>
+            <dd class="col-sm-9">@Model.Local</dd>
 
-            @if (extensao == ".mp4" || extensao == ".webm" || extensao == ".ogg")
+            <dt class="col-sm-3">Observação</dt>
+            <dd class="col-sm-9">@Model.Observacao</dd>
+
+            <dt class="col-sm-3">Autor</dt>
+            <dd class="col-sm-9">@Model.Autor?.Nome</dd>
+        </dl>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Ficheiro))
+{
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light fw-semibold">Visualização</div>
+        <div class="card-body text-center">
+            @if (isVideo)
             {
                 <video id="meuVideo"
                        class="video-js vjs-default-skin"
                        controls
                        preload="auto"
-                       width="450"
-                       height="300"
+                       width="100%"
+                       style="max-width: 640px; height: auto"
                        data-setup="{}">
                     <source src="@caminho" type="video/@extensao.TrimStart('.')">
                     O seu navegador não suporta a reprodução de vídeo.
@@ -66,27 +60,13 @@
             }
             else
             {
-                <img src="@Url.Content($"~/imagens/{ficheiro}")" alt="Imagem" class="img-fluid" style="max-width: 300px;" />
+                <img src="@caminho" alt="Imagem" class="img-fluid rounded border" style="max-height: 500px;" />
             }
-        </dd>
+        </div>
+    </div>
+}
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Observacao)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Observacao)
-        </dd>
-
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Autor)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Autor.Nome)
-        </dd>
-    </dl>
-</div>
-
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Editar</a> |
-    <a asp-action="Index">Voltar à lista</a>
+<div class="d-flex gap-2">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
 </div>
