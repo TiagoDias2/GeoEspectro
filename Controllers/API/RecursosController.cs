@@ -8,11 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using GeoEspectro.Data;
 using GeoEspectro.Models;
 using GeoEspectro.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GeoEspectro.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class RecursosController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -24,8 +26,12 @@ namespace GeoEspectro.Controllers.API
 
         // GET: api/Recursos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RecursosDTO>>> GetRecursos()
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<RecursosbyUserDTO>>> GetRecursos()
         {
+            // dados da pessoa autenticada
+            var nomePessoaAutenticada = User.Identity?.Name;
+
             // O que tínhamos antes:
             // SELECT *
             // FROM Recursos
@@ -36,14 +42,16 @@ namespace GeoEspectro.Controllers.API
             // FROM Recursos
 
             var listagemRecursos = await _context.Recursos
+                .Where(r => r.Autor.Nome == nomePessoaAutenticada)
                 .OrderByDescending(r => r.Data)
-                .Select(r => new RecursosDTO
+                .Select(r => new RecursosbyUserDTO
                 {
                     Nome = r.Nome,
                     Data = r.Data,
                     Tipo = r.Tipo,
                     Local = r.Local,
-                    Observacao = r.Observacao
+                    Observacao = r.Observacao,
+                    DonoRecurso = r.Autor.Nome
                 })
                 .ToListAsync();
 

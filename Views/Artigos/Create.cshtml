@@ -1,4 +1,4 @@
-﻿@model GeoEspectro.Models.ViewModels.ArtigoDTO
+@model GeoEspectro.Models.ViewModels.ArtigoDTO
 
 @{
     ViewData["Title"] = "Criar Artigo";
@@ -50,7 +50,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

@@ -1,5 +1,4 @@
-﻿@model GeoEspectro.Models.Artigos
-
+@model GeoEspectro.Models.ViewModels.ArtigoDTO
 @{
     ViewData["Title"] = "Editar Artigo";
 }
@@ -13,29 +12,38 @@
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="mb-3">
-                <label asp-for="Titulo" class="form-label"></label>
+                <label asp-for="Titulo" class="form-label fw-bold"></label>
                 <input asp-for="Titulo" class="form-control" />
-                <span asp-validation-for="Titulo" class="text-danger"></span>
+                <span asp-validation-for="Titulo" class="text-danger small"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Texto" class="form-label"></label>
+                <label asp-for="Texto" class="form-label fw-bold"></label>
                 <textarea asp-for="Texto" class="form-control" rows="5"></textarea>
-                <span asp-validation-for="Texto" class="text-danger"></span>
+                <span asp-validation-for="Texto" class="text-danger small"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="AutorFK" class="form-label">Autor</label>
-                <select asp-for="AutorFK" class="form-select" asp-items="ViewBag.UtilizadorFK"></select>
-                <span asp-validation-for="AutorFK" class="text-danger"></span>
+                <label asp-for="UtilizadorFK" class="form-label fw-bold">Autor</label>
+                <select asp-for="UtilizadorFK" class="form-select" asp-items="Model.ListaUtilizadores">
+                    <option value="">-- Selecione o Utilizador --</option>
+                </select>
+                <span asp-validation-for="UtilizadorFK" class="text-danger small"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="ListaCategorias" class="form-label">Categorias</label>
-                <select asp-for="ListaCategorias" class="form-select" asp-items="ViewBag.ListaCategorias" multiple></select>
+                <label asp-for="ListaCategoriasSelecionadas" class="form-label fw-bold">Categorias</label>
+                <select asp-for="ListaCategoriasSelecionadas" class="form-select" asp-items="Model.ListaCategorias" multiple></select>
+                <span asp-validation-for="ListaCategoriasSelecionadas" class="text-danger small"></span>
             </div>
 
-            <div class="d-flex justify-content-between">
+            <div class="mb-3">
+                <label asp-for="ListaRecursosSelecionados" class="form-label fw-bold">Recursos Multimédia</label>
+                <select asp-for="ListaRecursosSelecionados" class="form-select" asp-items="Model.ListaRecursos" multiple></select>
+                <span asp-validation-for="ListaRecursosSelecionados" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex justify-content-between mt-3">
                 <a asp-action="Index" class="btn btn-secondary">← Cancelar</a>
                 <button type="submit" class="btn btn-primary">Guardar Alterações</button>
             </div>
@@ -44,7 +52,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

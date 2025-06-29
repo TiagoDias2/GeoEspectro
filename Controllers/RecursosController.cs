@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using GeoEspectro.Data;
 using GeoEspectro.Models;
 using GeoEspectro.Data.Migrations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GeoEspectro.Controllers
 {
+    [Authorize]
     public class RecursosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -52,7 +54,6 @@ namespace GeoEspectro.Controllers
         // GET: Recursos/Create
         public IActionResult Create()
         {
-            ViewData["AutorFK"] = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome");
             return View();
         }
 
@@ -61,9 +62,10 @@ namespace GeoEspectro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Tipo,Local,Ficheiro,Observacao,AutorFK")] Recursos recurso, IFormFile imagemFoto)
+        public async Task<IActionResult> Create(
+            [Bind("Id,Nome,Tipo,Local,Ficheiro,Observacao")] Recursos recurso,
+            IFormFile imagemFoto)
         {
-            // vars auxiliares
             bool haErro = false;
             string nomeImagem = "";
             string extensao = Path.GetExtension(imagemFoto.FileName).ToLowerInvariant();
@@ -72,48 +74,34 @@ namespace GeoEspectro.Controllers
 
             if (imagemFoto == null)
             {
-                // não há imagem
                 haErro = true;
-                // crio msg de erro
                 ModelState.AddModelError("", "Tem de submeter uma Fotografia");
             }
-
+            else if (!extensaoPermitidasImagens.Contains(extensao) && !extensaoPermitidasVideo.Contains(extensao))
+            {
+                haErro = true;
+                ModelState.AddModelError("", "Tem de submeter uma Fotografia/Video do tipo indicado");
+            }
+            else if (imagemFoto.Length > 20 * 1024 * 1024)
+            {
+                haErro = true;
+                ModelState.AddModelError("", "Não pode submeter ficheiros multimédia superiores a 20 MB");
+            }
             else
             {
-                if (!extensaoPermitidasImagens.Contains(extensao) && !extensaoPermitidasVideo.Contains(extensao))
-                {
-                    // não há imagem
-                    haErro = true;
-                    // crio msg de erro
-                    ModelState.AddModelError("", "Tem de submeter uma Fotografia/Video do tipo indicado");
-                }
-
-                else if (imagemFoto.Length > 20 * 1024 * 1024)
-                {
-                    // não tem a extensão pretendida
-                    haErro = true;
-                    // crio msg de erro
-                    ModelState.AddModelError("", "Não pode submeter ficheiros multimédia superiores a 20 MB");
-                }
-
-                else
-                {
-                    // há imagem,
-                    // vamos processá-la
-                    //*********************
-                    // Novo nome para a imagem
-                    Guid g = Guid.NewGuid();
-                    nomeImagem = g.ToString();
-                    nomeImagem += extensao;
-
-                    // guardar este nome na BD
-                    recurso.Ficheiro = nomeImagem;
-                }
+                Guid g = Guid.NewGuid();
+                nomeImagem = g.ToString() + extensao;
+                recurso.Ficheiro = nomeImagem;
             }
 
-
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !haErro)
             {
+                // Associar o utilizador autenticado
+                recurso.AutorFK = _context.Utilizadores
+                    .Where(u => u.UserName == User.Identity.Name)
+                    .Select(u => u.ID)
+                    .FirstOrDefault();
+
                 recurso.Data = DateTime.Now;
 
                 string localizacaoImagem = _webHostEnvironment.WebRootPath;
@@ -123,7 +111,6 @@ namespace GeoEspectro.Controllers
                     recurso.Tipo = "Imagem";
                     localizacaoImagem = Path.Combine(localizacaoImagem, "imagens");
                 }
-
                 else
                 {
                     recurso.Tipo = "Video";
@@ -131,25 +118,24 @@ namespace GeoEspectro.Controllers
                 }
 
                 _context.Add(recurso);
-
-
                 await _context.SaveChangesAsync();
 
                 if (!Directory.Exists(localizacaoImagem))
                 {
                     Directory.CreateDirectory(localizacaoImagem);
                 }
+
                 nomeImagem = Path.Combine(localizacaoImagem, nomeImagem);
-                using var stream = new FileStream(
-                    nomeImagem, FileMode.Create
-                    );
+                using var stream = new FileStream(nomeImagem, FileMode.Create);
                 await imagemFoto.CopyToAsync(stream);
 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AutorFK"] = new SelectList(_context.Set<Utilizadores>(), "ID", "ID", recurso.AutorFK);
+
+            // Em caso de erro, não volta a mostrar o autor
             return View(recurso);
         }
+
 
         // GET: Recursos/Edit/5
         public async Task<IActionResult> Edit(int? id)

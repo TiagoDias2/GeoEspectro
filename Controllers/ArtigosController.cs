@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using GeoEspectro.Data;
 using GeoEspectro.Models;
 using GeoEspectro.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace GeoEspectro.Controllers
 {
+    [Authorize]
     public class ArtigosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -27,6 +30,7 @@ namespace GeoEspectro.Controllers
         public async Task<IActionResult> Index(string searchString, string? categoriaId)
         {
             var query = _context.Artigos
+                .Include(a => a.Autor) 
                 .Include(a => a.ListaCategorias)
                     .ThenInclude(ac => ac.Categoria)
                 .AsQueryable();
@@ -113,11 +117,17 @@ namespace GeoEspectro.Controllers
                 return View(viewModel);
             }
 
+            // Obter o ID do utilizador autenticado
+            var utilizadorId = _context.Utilizadores
+                .Where(u => u.UserName == User.Identity.Name)
+                .Select(u => u.ID)
+                .FirstOrDefault();
+
             var artigo = new Artigos
             {
                 Titulo = viewModel.Titulo,
                 Texto = viewModel.Texto,
-                AutorFK = viewModel.UtilizadorFK,
+                AutorFK = utilizadorId,
                 Data = DateTime.Now,
                 ListaCategorias = viewModel.ListaCategoriasSelecionadas
                     .Select(catId => new ArtigosCategoria
@@ -155,47 +165,125 @@ namespace GeoEspectro.Controllers
                 return NotFound();
             }
 
-            var artigos = await _context.Artigos.FindAsync(id);
-            if (artigos == null)
+            var artigo = await _context.Artigos
+                .Include(a => a.ListaCategorias)
+                .Include(a => a.ListaRecursos)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (artigo == null)
             {
                 return NotFound();
             }
-            return View(artigos);
+
+            var viewModel = new ArtigoDTO
+            {
+                Id = artigo.Id,
+                Titulo = artigo.Titulo,
+                Texto = artigo.Texto,
+                UtilizadorFK = artigo.AutorFK,
+                ListaCategoriasSelecionadas = artigo.ListaCategorias.Select(ac => ac.CategoriaId).ToList(),
+                ListaRecursosSelecionados = artigo.ListaRecursos.Select(d => d.RecursoFK).ToList(),
+                ListaUtilizadores = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome", artigo.AutorFK),
+                ListaCategorias = new MultiSelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria"),
+                ListaRecursos = new MultiSelectList(_context.Recursos.OrderBy(r => r.Nome), "Id", "Nome")
+            };
+
+            return View(viewModel);
         }
 
         // POST: Artigos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Titulo,Texto,Data")] Artigos artigos)
+        public async Task<IActionResult> Edit(int id, ArtigoDTO viewModel)
         {
-            if (id != artigos.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(artigos);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ArtigosExists(artigos.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                viewModel.ListaUtilizadores = new SelectList(_context.Utilizadores.OrderBy(u => u.Nome), "ID", "Nome", viewModel.UtilizadorFK);
+                viewModel.ListaCategorias = new MultiSelectList(_context.Categorias.OrderBy(c => c.Categoria), "Id", "Categoria", viewModel.ListaCategoriasSelecionadas);
+                viewModel.ListaRecursos = new MultiSelectList(_context.Recursos.OrderBy(r => r.Nome), "Id", "Nome", viewModel.ListaRecursosSelecionados);
+                return View(viewModel);
             }
-            return View(artigos);
+
+            var artigo = await _context.Artigos
+                .Include(a => a.ListaCategorias)
+                .Include(a => a.ListaRecursos)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (artigo == null)
+            {
+                return NotFound();
+            }
+
+            // Atualizar propriedades básicas
+            artigo.Titulo = viewModel.Titulo;
+            artigo.Texto = viewModel.Texto;
+            artigo.Data = DateTime.Now;
+            artigo.AutorFK = viewModel.UtilizadorFK;
+
+            // Atualizar categorias
+            var categoriasAtuais = artigo.ListaCategorias.Select(ac => ac.CategoriaId).ToList();
+            var categoriasParaAdicionar = viewModel.ListaCategoriasSelecionadas.Except(categoriasAtuais).ToList();
+            var categoriasParaRemover = categoriasAtuais.Except(viewModel.ListaCategoriasSelecionadas).ToList();
+
+            foreach (var catId in categoriasParaRemover)
+            {
+                var ac = artigo.ListaCategorias.FirstOrDefault(ac => ac.CategoriaId == catId);
+                if (ac != null)
+                {
+                    artigo.ListaCategorias.Remove(ac);
+                }
+            }
+
+            foreach (var catId in categoriasParaAdicionar)
+            {
+                artigo.ListaCategorias.Add(new ArtigosCategoria { CategoriaId = catId });
+            }
+
+            // Atualizar recursos
+            var recursosAtuais = artigo.ListaRecursos.Select(d => d.RecursoFK).ToList();
+            var recursosParaAdicionar = viewModel.ListaRecursosSelecionados.Except(recursosAtuais).ToList();
+            var recursosParaRemover = recursosAtuais.Except(viewModel.ListaRecursosSelecionados).ToList();
+
+            foreach (var recursoId in recursosParaRemover)
+            {
+                var detalhe = artigo.ListaRecursos.FirstOrDefault(d => d.RecursoFK == recursoId);
+                if (detalhe != null)
+                {
+                    _context.Detalhes.Remove(detalhe);
+                }
+            }
+
+            foreach (var recursoId in recursosParaAdicionar)
+            {
+                artigo.ListaRecursos.Add(new Detalhes
+                {
+                    RecursoFK = recursoId,
+                    Principal = false // Ou implemente lógica para definir o principal
+                });
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ArtigosExists(artigo.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Artigos/Delete/5

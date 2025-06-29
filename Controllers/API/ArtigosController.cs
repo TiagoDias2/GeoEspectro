@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GeoEspectro.Data;
 using GeoEspectro.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GeoEspectro.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class ArtigosController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
