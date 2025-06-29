@@ -1,62 +1,87 @@
+@* Define o ViewModel utilizado nesta vista - UtilizadorEditDTO *@
 @model GeoEspectro.Models.ViewModels.UtilizadorEditDTO
 
+@* Bloco para definir metadados da página *@
 @{
+    @* Título da página que será usado no layout *@
     ViewData["Title"] = "Editar Utilizador";
 }
 
+@* Título principal da página *@
 <h1 class="mb-4">Editar Utilizador</h1>
 
+@* Container principal com sistema de grid do Bootstrap *@
 <div class="row justify-content-center">
     <div class="col-md-6">
+        @* Card que contém o formulário *@
         <div class="card shadow-sm">
             <div class="card-body">
+                @* Formulário para edição do utilizador *@
                 <form asp-action="Edit">
+                    @* Exibe erros de validação a nível de modelo *@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    @* Campo hidden para o ID do utilizador *@
                     <input type="hidden" asp-for="ID" />
 
+                    @* Campo para o Nome do utilizador *@
                     <div class="mb-3">
                         <label asp-for="Nome" class="form-label"></label>
                         <input asp-for="Nome" class="form-control" />
+                        @* Mensagem de validação para o Nome *@
                         <span asp-validation-for="Nome" class="text-danger"></span>
                     </div>
 
+                    @* Campo para a Morada *@
                     <div class="mb-3">
                         <label asp-for="Morada" class="form-label"></label>
                         <input asp-for="Morada" class="form-control" />
+                        @* Mensagem de validação para a Morada *@
                         <span asp-validation-for="Morada" class="text-danger"></span>
                     </div>
 
+                    @* Campo para o Código Postal *@
                     <div class="mb-3">
                         <label asp-for="CodPostal" class="form-label"></label>
                         <input asp-for="CodPostal" class="form-control" />
+                        @* Mensagem de validação para o Código Postal *@
                         <span asp-validation-for="CodPostal" class="text-danger"></span>
                     </div>
 
+                    @* Campo para o País *@
                     <div class="mb-3">
                         <label asp-for="Pais" class="form-label"></label>
                         <input asp-for="Pais" class="form-control" />
+                        @* Mensagem de validação para o País *@
                         <span asp-validation-for="Pais" class="text-danger"></span>
                     </div>
 
+                    @* Campo para o NIF *@
                     <div class="mb-3">
                         <label asp-for="Nif" class="form-label"></label>
                         <input asp-for="Nif" class="form-control" />
+                        @* Mensagem de validação para o NIF *@
                         <span asp-validation-for="Nif" class="text-danger"></span>
                     </div>
 
+                    @* Campo para o Telemóvel *@
                     <div class="mb-3">
                         <label asp-for="Telemovel" class="form-label"></label>
                         <input asp-for="Telemovel" class="form-control" />
+                        @* Mensagem de validação para o Telemóvel *@
                         <span asp-validation-for="Telemovel" class="text-danger"></span>
                     </div>
 
+                    @* Checkbox para definir se é Administrador *@
                     <div class="form-check mb-3">
                         <input type="checkbox" asp-for="IsAdmin" class="form-check-input" />
                         <label asp-for="IsAdmin" class="form-check-label">É Administrador?</label>
                     </div>
 
+                    @* Botões de ação do formulário *@
                     <div class="d-flex justify-content-between">
+                        @* Botão para submeter o formulário *@
                         <button type="submit" class="btn btn-primary">Guardar Alterações</button>
+                        @* Botão para cancelar e voltar à lista *@
                         <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
                     </div>
                 </form>
@@ -65,6 +90,10 @@
     </div>
 </div>
 
+@* Secção para scripts específicos da página *@
 @section Scripts {
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @* Inclui scripts de validação do lado do cliente *@
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

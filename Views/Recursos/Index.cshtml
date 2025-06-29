@@ -1,53 +1,66 @@
-@model IEnumerable<GeoEspectro.Models.Recursos>
-
+@* Define o modelo da vista como uma coleção de objetos Recursos *@
+@model IEnumerable<GeoEspectro.Models.Recursos>  
 @{
-    ViewData["Title"] = "Recursos";
+    ViewData["Title"] = "Recursos";  @* Define o título da página que será usado no layout *@
 }
 
+@* Início do container principal *@
 <div class="container mt-4">
+    @* Cabeçalho da página com título e botão para criar novo recurso *@
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0">@ViewData["Title"]</h2>
-        <a asp-action="Create" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i> Novo Recurso
+        <h2 class="mb-0">@ViewData["Title"]</h2>  @* Exibe o título da página *@
+        <a asp-action="Create" class="btn btn-success">  @* Botão para criar novo recurso *@
+            <i class="bi bi-plus-circle"></i> Novo Recurso  @* Ícone e texto do botão *@
         </a>
     </div>
 
+    @* Card que envolve a tabela de recursos *@
     <div class="card shadow-sm">
         <div class="card-body p-0">
+            @* Tabela responsiva para exibição dos recursos *@
             <div class="table-responsive">
                 <table class="table table-hover table-bordered mb-0">
+                    @* Cabeçalho da tabela *@
                     <thead class="table-light">
                         <tr>
-                            <th>@Html.DisplayNameFor(model => model.First().Nome)</th>
-                            <th>@Html.DisplayNameFor(model => model.First().Data)</th>
-                            <th>@Html.DisplayNameFor(model => model.First().Tipo)</th>
-                            <th>@Html.DisplayNameFor(model => model.First().Local)</th>
-                            <th>@Html.DisplayNameFor(model => model.First().Ficheiro)</th>
-                            <th>@Html.DisplayNameFor(model => model.First().Observacao)</th>
-                            <th>@Html.DisplayNameFor(model => model.First().Autor)</th>
-                            <th class="text-center">Ações</th>
+                            @* Colunas do cabeçalho geradas dinamicamente com base no modelo *@
+                            <th>@Html.DisplayNameFor(model => model.First().Nome)</th>  @* Nome do campo Nome *@
+                            <th>@Html.DisplayNameFor(model => model.First().Data)</th>  @* Nome do campo Data *@
+                            <th>@Html.DisplayNameFor(model => model.First().Tipo)</th>  @* Nome do campo Tipo *@
+                            <th>@Html.DisplayNameFor(model => model.First().Local)</th>  @* Nome do campo Local *@
+                            <th>@Html.DisplayNameFor(model => model.First().Ficheiro)</th>  @* Nome do campo Ficheiro *@
+                            <th>@Html.DisplayNameFor(model => model.First().Observacao)</th>  @* Nome do campo Observacao *@
+                            <th>@Html.DisplayNameFor(model => model.First().Autor)</th>  @* Nome do campo Autor *@
+                            <th class="text-center">Ações</th>  @* Coluna para botões de ação *@
                         </tr>
                     </thead>
+                    @* Corpo da tabela *@
                     <tbody>
+                        @* Loop através de cada recurso no modelo *@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.Nome</td>
-                                <td>@item.Data.ToString("dd/MM/yyyy")</td>
-                                <td>@item.Tipo</td>
-                                <td>@item.Local</td>
-                                <td>@item.Ficheiro</td>
-                                <td>@item.Observacao</td>
-                                <td>@item.Autor?.Nome</td>
+                                @* Exibe os valores de cada propriedade do recurso *@
+                                <td>@item.Nome</td>  @* Nome do recurso *@
+                                <td>@item.Data.ToString("dd/MM/yyyy")</td>  @* Data formatada *@
+                                <td>@item.Tipo</td>  @* Tipo de recurso *@
+                                <td>@item.Local</td>  @* Localização *@
+                                <td>@item.Ficheiro</td>  @* Nome do ficheiro *@
+                                <td>@item.Observacao</td>  @* Observações *@
+                                <td>@item.Autor?.Nome</td>  @* Nome do autor (com null check) *@
+                                @* Coluna com botões de ação *@
                                 <td class="text-center">
+                                    @* Botão para editar recurso *@
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1" title="Editar">
-                                        <i class="bi bi-pencil-square"></i>
+                                        <i class="bi bi-pencil-square"></i>  @* Ícone de edição *@
                                     </a>
+                                    @* Botão para ver detalhes do recurso *@
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info me-1 text-white" title="Detalhes">
-                                        <i class="bi bi-eye"></i>
+                                        <i class="bi bi-eye"></i>  @* Ícone de visualização *@
                                     </a>
+                                    @* Botão para eliminar recurso *@
                                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Eliminar">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="bi bi-trash"></i>  @* Ícone de eliminação *@
                                     </a>
                                 </td>
                             </tr>
@@ -58,3 +71,4 @@
         </div>
     </div>
 </div>
+@* Fim do container principal *@

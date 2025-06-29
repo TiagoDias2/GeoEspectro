@@ -1,42 +1,64 @@
 @model GeoEspectro.Models.Recursos
+@* Define que esta View usa um modelo do tipo Recursos *@
 
 @{
     ViewData["Title"] = "Apagar Recurso";
+    @* Define o título da página, que será usado no layout e no cabeçalho *@
 }
 
 <h1 class="text-danger fw-bold mb-4">@ViewData["Title"]</h1>
+@* Mostra o título da página com estilo de texto em vermelho e negrito *@
 
 <h4 class="mb-3">Tens a certeza que queres apagar este recurso?</h4>
+@* Pergunta de confirmação para o utilizador *@
 
 <div class="card border-danger mb-4">
+    @* Cartão com borda vermelha para indicar que é uma ação crítica *@
+
     <div class="card-body">
         <dl class="row mb-0">
+            @* Mostra os detalhes do recurso a ser eliminado *@
+
             <dt class="col-sm-3">Nome</dt>
             <dd class="col-sm-9">@Model.Nome</dd>
+            @* Nome do recurso *@
 
             <dt class="col-sm-3">Data</dt>
             <dd class="col-sm-9">@Model.Data.ToString("dd/MM/yyyy HH:mm")</dd>
+            @* Data do recurso formatada *@
 
             <dt class="col-sm-3">Tipo</dt>
             <dd class="col-sm-9">@Model.Tipo</dd>
+            @* Tipo do recurso (Imagem, Vídeo, etc.) *@
 
             <dt class="col-sm-3">Local</dt>
             <dd class="col-sm-9">@Model.Local</dd>
+            @* Local associado ao recurso *@
 
             <dt class="col-sm-3">Ficheiro</dt>
             <dd class="col-sm-9">@Model.Ficheiro</dd>
+            @* Nome do ficheiro armazenado *@
 
             <dt class="col-sm-3">Observação</dt>
             <dd class="col-sm-9">@Model.Observacao</dd>
+            @* Observações adicionais sobre o recurso *@
 
             <dt class="col-sm-3">Autor</dt>
             <dd class="col-sm-9">@Model.Autor?.Nome</dd>
+            @* Nome do autor (se existir) *@
         </dl>
     </div>
 </div>
 
 <form asp-action="Delete" method="post" class="d-flex gap-2">
+    @* Formulário que confirma a eliminação do recurso *@
+
     <input type="hidden" asp-for="Id" />
+    @* Campo oculto que envia o ID do recurso a ser eliminado *@
+
     <button type="submit" class="btn btn-danger">Apagar</button>
+    @* Botão vermelho que executa a ação de apagar *@
+
     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    @* Botão para cancelar e voltar à lista de recursos *@
 </form>

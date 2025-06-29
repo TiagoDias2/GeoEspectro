@@ -1,39 +1,49 @@
+// Configuração inicial da aplicação web
+using GeoEspectro.Data;
+using GeoEspectro.Services;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using GeoEspectro.Data;
-using Microsoft.AspNetCore.Http.Features;
-using System.Text.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using GeoEspectro.Services;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text.Json.Serialization;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Adicionar serviços ao container DI (Dependency Injection)
+
+// Configuração da ligação à base de dados SQL Server
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Configuração do Identity (autenticação/autorização) com confirmação de conta obrigatória
+// Adiciona suporte a roles (perfis de utilizador)
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>() // Adiciona suporte a roles
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+// Configuração para permitir uploads de ficheiros até 20MB
 builder.Services.Configure<FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = 20 * 1024 * 1024; //20MB
 });
 
+// Configuração dos controllers para ignorar referências circulares no JSON
 builder.Services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-// JWT Settings
+// Configuração do JWT (JSON Web Tokens) para autenticação
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
+// Configuração dos esquemas de autenticação:
+// - Cookies para autenticação tradicional
+// - JWT Bearer para autenticação API
 builder.Services.AddAuthentication(options => { })
    .AddCookie("Cookies", options => {
        options.LoginPath = "/Identity/Account/Login";
@@ -52,15 +62,20 @@ builder.Services.AddAuthentication(options => { })
        };
    });
 
+// Configuração do SignalR para comunicação em tempo real
 builder.Services.AddSignalR();
+// Registo do serviço para geração de tokens
 builder.Services.AddScoped<TokenService>();
 
+// Configuração de políticas de autorização
+// Exemplo: política "AdminPolicy" que requer a claim "IsAdmin" com valor "true"
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminPolicy", policy =>
         policy.RequireClaim("IsAdmin", "true"));
 });
 
+// Configuração do Swagger/OpenAPI para documentação da API
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
@@ -69,14 +84,20 @@ builder.Services.AddSwaggerGen(c => {
         Description = "API para gestão de categorias, recursos multimédia associados aos artigos publicados"
     });
 
+    // Incluir comentários XML na documentação
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 });
 
+// Construir a aplicação
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configurar o pipeline de pedidos HTTP
+
+// Em desenvolvimento:
+// - Usar páginas de erro de migração
+// - Ativar Swagger UI
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -85,11 +106,14 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
+    // Em produção:
+    // - Usar página de erro personalizada
+    // - Forçar HTTPS (HTTP Strict Transport Security)
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-// Criação das roles durante a inicialização
+// Configuração inicial das roles (perfis) e utilizador admin
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -98,8 +122,10 @@ using (var scope = app.Services.CreateScope())
     {
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
+        // Roles a criar
         string[] roleNames = { "Admin", "User", "Editor" };
 
+        // Criar cada role se não existir
         foreach (var roleName in roleNames)
         {
             if (!await roleManager.RoleExistsAsync(roleName))
@@ -108,7 +134,7 @@ using (var scope = app.Services.CreateScope())
             }
         }
 
-        // Opcional: Criar um usuário admin padrão
+        // Criar um utilizador admin por defeito (opcional)
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         string adminEmail = "admin@example.com";
         string adminPassword = "Admin@123";
@@ -136,15 +162,21 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
+// Configurar o middleware
+app.UseHttpsRedirection();      // Redirecionar HTTP para HTTPS
+app.UseStaticFiles();          // Servir ficheiros estáticos
+app.UseRouting();              // Roteamento
+app.UseAuthentication();       // Autenticação
+app.UseAuthorization();        // Autorização
+
+// Mapear o hub do SignalR
 app.MapHub<GostosHub>("/gostoshub");
+
+// Mapear as rotas MVC e Razor Pages
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+// Iniciar a aplicação
 app.Run();

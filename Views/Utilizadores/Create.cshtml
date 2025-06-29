@@ -1,67 +1,89 @@
-﻿@model GeoEspectro.Models.Utilizadores
+﻿@* Define o modelo da vista como um objeto Utilizadores *@
+@model GeoEspectro.Models.Utilizadores
 
+@* Bloco para configuração do título da página *@
 @{
     ViewData["Title"] = "Criar Utilizador";
 }
 
+@* Título principal da página *@
 <h1 class="mb-4">Criar Novo Utilizador</h1>
 
+@* Container principal com sistema de grid responsivo *@
 <div class="row justify-content-center">
     <div class="col-md-6">
+        @* Coluna com 6 unidades de largura em médio (md) *@
+
+        @* Card que contém o formulário *@
         <div class="card shadow-sm">
+            @* Sombra suave *@
             <div class="card-body">
+                @* Formulário para criação de utilizador *@
                 <form asp-action="Create">
+                    @* Resumo de erros de validação (apenas erros de modelo) *@
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
+                    @* Campo para o Nome *@
                     <div class="mb-3">
+                        @* Margem inferior (mb-3) *@
                         <label asp-for="Nome" class="form-label"></label>
-                        <input asp-for="Nome" class="form-control" />
-                        <span asp-validation-for="Nome" class="text-danger"></span>
+                        <input asp-for="Nome" class="form-control" /> @* Input controlado *@
+                        <span asp-validation-for="Nome" class="text-danger"></span> @* Mensagem erro *@
                     </div>
 
+                    @* Campo para a Morada *@
                     <div class="mb-3">
                         <label asp-for="Morada" class="form-label"></label>
                         <input asp-for="Morada" class="form-control" />
                         <span asp-validation-for="Morada" class="text-danger"></span>
                     </div>
 
+                    @* Campo para o Código Postal *@
                     <div class="mb-3">
                         <label asp-for="CodPostal" class="form-label"></label>
                         <input asp-for="CodPostal" class="form-control" />
                         <span asp-validation-for="CodPostal" class="text-danger"></span>
                     </div>
 
+                    @* Campo para o País *@
                     <div class="mb-3">
                         <label asp-for="Pais" class="form-label"></label>
                         <input asp-for="Pais" class="form-control" />
                         <span asp-validation-for="Pais" class="text-danger"></span>
                     </div>
 
+                    @* Campo para o NIF *@
                     <div class="mb-3">
                         <label asp-for="Nif" class="form-label"></label>
                         <input asp-for="Nif" class="form-control" />
                         <span asp-validation-for="Nif" class="text-danger"></span>
                     </div>
 
+                    @* Campo para o Telemóvel *@
                     <div class="mb-3">
                         <label asp-for="Telemovel" class="form-label"></label>
                         <input asp-for="Telemovel" class="form-control" />
                         <span asp-validation-for="Telemovel" class="text-danger"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Criar Utilizador</button>
+                    @* Botão de submissão do formulário *@
+                    <button type="submit" class="btn btn-primary w-100">Criar Utilizador</button> @* Largura total *@
                 </form>
             </div>
         </div>
 
+        @* Link para voltar à lista de utilizadores *@
         <div class="text-center mt-3">
+            @* Margem superior (mt-3) *@
             <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
         </div>
     </div>
 </div>
 
+@* Secção para scripts específicos *@
 @section Scripts {
     @{
+        @* Inclui scripts de validação do lado do cliente *@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

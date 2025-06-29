@@ -1,34 +1,60 @@
 ﻿@using Microsoft.AspNetCore.Identity
+<!-- Importa o namespace necessário para utilizar a gestão de identidade/autenticação do ASP.NET Core -->
 @using GeoEspectro.Data
+<!-- Importa o namespace onde está definida a classe ApplicationUser e a lógica de dados personalizada -->
 @inject UserManager<ApplicationUser> UserManager
+<!-- Injeta a instância do UserManager para manipular utilizadores (como encontrar, atualizar, etc.) -->
 @inject SignInManager<ApplicationUser> SignInManager
+<!-- Injeta a instância do SignInManager para lidar com autenticação e sessões -->
 
 <ul class="navbar-nav ms-auto">
+    <!-- Início da lista de navegação da barra de topo (navbar), alinhada à direita (ms-auto = margem esquerda automática) -->
     @if (SignInManager.IsSignedIn(User))
     {
+        <!-- Se o utilizador estiver autenticado (sessão iniciada) -->
+
         <li class="nav-item dropdown">
+            <!-- Item de menu que funciona como dropdown -->
+
             <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 👋 @User.Identity?.Name
+                <!-- Mostra o nome do utilizador autenticado com um emoji de saudação -->
             </a>
+
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <!-- Lista suspensa de opções alinhada à direita -->
+
                 <li>
                     <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Minha Conta</a>
+                    <!-- Link para o utilizador aceder à página de gestão da conta (perfil, email, password, etc.) -->
                 </li>
+
                 <li>
                     <form class="dropdown-item p-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post">
+                        <!-- Formulário para terminar a sessão. O returnUrl redireciona para a página inicial após logout -->
+
                         <button type="submit" class="btn btn-link w-100 text-start text-danger">Terminar Sessão</button>
+                        <!-- Botão de logout com aparência de link, alinhado à esquerda e a vermelho -->
                     </form>
                 </li>
+
             </ul>
         </li>
     }
     else
     {
+        <!-- Caso o utilizador NÃO esteja autenticado -->
+
         <li class="nav-item">
             <a class="nav-link fw-semibold text-dark" asp-area="Identity" asp-page="/Account/Login">Entrar</a>
+            <!-- Link para a página de login -->
         </li>
+
         <li class="nav-item">
             <a class="nav-link fw-semibold text-dark" asp-area="Identity" asp-page="/Account/Register">Registar</a>
+            <!-- Link para a página de registo de novo utilizador -->
         </li>
     }
+
 </ul>
+<!-- Fim da lista de navegação -->

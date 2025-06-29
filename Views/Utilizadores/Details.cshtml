@@ -1,40 +1,73 @@
 ﻿@model GeoEspectro.Models.Utilizadores
-
+<!-- Define o tipo do modelo desta view: um único objeto Utilizadores -->
 @{
     ViewData["Title"] = "Detalhes do Utilizador";
+    <!-- Define o título da página a ser exibido no layout -->
 }
 
 <h1 class="mb-4">Detalhes do Utilizador</h1>
+<!-- Título principal da página com margem inferior -->
 
 <div class="row justify-content-center">
+    <!-- Início de uma linha com conteúdo centralizado horizontalmente -->
+
     <div class="col-md-8">
+        <!-- Coluna com largura média (8 colunas do grid do Bootstrap) -->
+
         <div class="card shadow-sm">
+            <!-- Cartão com sombra leve para destacar o conteúdo -->
+
             <div class="card-body">
+                <!-- Corpo do cartão onde são exibidos os dados do utilizador -->
+
                 <dl class="row mb-0">
+                    <!-- Lista de definições (dl) para apresentar os dados em pares campo/valor -->
+
                     <dt class="col-sm-4">Nome</dt>
+                    <!-- Título do campo: Nome -->
                     <dd class="col-sm-8">@Model.Nome</dd>
+                    <!-- Valor do campo Nome -->
 
                     <dt class="col-sm-4">Morada</dt>
+                    <!-- Título do campo: Morada -->
                     <dd class="col-sm-8">@Model.Morada</dd>
+                    <!-- Valor da Morada -->
 
                     <dt class="col-sm-4">Código Postal</dt>
+                    <!-- Título do campo: Código Postal -->
                     <dd class="col-sm-8">@Model.CodPostal</dd>
+                    <!-- Valor do Código Postal -->
 
                     <dt class="col-sm-4">País</dt>
+                    <!-- Título do campo: País -->
                     <dd class="col-sm-8">@Model.Pais</dd>
+                    <!-- Valor do País -->
 
                     <dt class="col-sm-4">NIF</dt>
+                    <!-- Título do campo: NIF -->
                     <dd class="col-sm-8">@Model.Nif</dd>
+                    <!-- Valor do NIF -->
 
                     <dt class="col-sm-4">Telemóvel</dt>
+                    <!-- Título do campo: Telemóvel -->
                     <dd class="col-sm-8">@Model.Telemovel</dd>
+                    <!-- Valor do Telemóvel -->
                 </dl>
             </div>
+            <!-- Fim do corpo do cartão -->
         </div>
+        <!-- Fim do cartão -->
 
         <div class="mt-4 d-flex justify-content-between">
+            <!-- Div com margem superior e distribuição horizontal dos botões -->
+
             <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-primary">Editar</a>
+            <!-- Botão para redirecionar para a página de edição do utilizador -->
+
             <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
+            <!-- Botão para voltar à lista de utilizadores -->
         </div>
     </div>
+    <!-- Fim da coluna -->
 </div>
+<!-- Fim da linha principal -->

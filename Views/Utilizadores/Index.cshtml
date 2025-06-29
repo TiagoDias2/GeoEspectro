@@ -1,49 +1,70 @@
-﻿@model IEnumerable<GeoEspectro.Models.Utilizadores>
+﻿@* Define o modelo desta vista como uma coleção de objetos Utilizadores *@
+@model IEnumerable<GeoEspectro.Models.Utilizadores>
 
+@* Bloco de código C# para definir metadados da página *@
 @{
+    @* Define o título da página que será usado no layout *@
     ViewData["Title"] = "Utilizadores";
 }
 
+@* Container principal da página *@
 <div class="container mt-4">
+    @* Cabeçalho da página com título e botão de criação *@
     <div class="d-flex justify-content-between align-items-center mb-3">
+        @* Título da página *@
         <h2 class="mb-0">@ViewData["Title"]</h2>
+        @* Botão para criar novo utilizador *@
         <a asp-action="Create" class="btn btn-success">
+            @* Ícone de adicionar pessoa *@
             <i class="bi bi-person-plus-fill"></i> Novo Utilizador
         </a>
     </div>
 
+    @* Card que contém a tabela de utilizadores *@
     <div class="card shadow-sm">
         <div class="card-body p-0">
+            @* Div responsiva para tabela *@
             <div class="table-responsive">
+                @* Tabela principal com lista de utilizadores *@
                 <table class="table table-hover table-bordered mb-0">
+                    @* Cabeçalho da tabela *@
                     <thead class="table-light">
                         <tr>
+                            @* Colunas com os nomes das propriedades do modelo *@
                             <th>@Html.DisplayNameFor(model => model.First().Nome)</th>
                             <th>@Html.DisplayNameFor(model => model.First().Morada)</th>
                             <th>@Html.DisplayNameFor(model => model.First().CodPostal)</th>
                             <th>@Html.DisplayNameFor(model => model.First().Pais)</th>
                             <th>@Html.DisplayNameFor(model => model.First().Nif)</th>
                             <th>@Html.DisplayNameFor(model => model.First().Telemovel)</th>
+                            @* Coluna para ações *@
                             <th class="text-center">Ações</th>
                         </tr>
                     </thead>
+                    @* Corpo da tabela *@
                     <tbody>
+                        @* Loop para cada utilizador na lista *@
                         @foreach (var item in Model)
                         {
                             <tr>
+                                @* Células com os valores das propriedades *@
                                 <td>@item.Nome</td>
                                 <td>@item.Morada</td>
                                 <td>@item.CodPostal</td>
                                 <td>@item.Pais</td>
                                 <td>@item.Nif</td>
                                 <td>@item.Telemovel</td>
+                                @* Célula com botões de ação *@
                                 <td class="text-center">
+                                    @* Botão de edição *@
                                     <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-warning me-1" title="Editar">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
+                                    @* Botão de detalhes *@
                                     <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-info text-white me-1" title="Detalhes">
                                         <i class="bi bi-eye"></i>
                                     </a>
+                                    @* Botão de eliminar *@
                                     <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger" title="Eliminar">
                                         <i class="bi bi-trash"></i>
                                     </a>
@@ -55,4 +76,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>

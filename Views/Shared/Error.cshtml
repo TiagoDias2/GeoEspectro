@@ -1,25 +1,39 @@
 ﻿@model ErrorViewModel
+<!-- Define o modelo de dados utilizado nesta view: ErrorViewModel -->
 @{
     ViewData["Title"] = "Error";
+    <!-- Define o título da página, que pode ser utilizado no layout -->
 }
 
 <h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<!-- Título principal da página com estilo de texto em vermelho -->
 
+<h2 class="text-danger">An error occurred while processing your request.</h2>
+<!-- Mensagem de erro genérica também a vermelho -->
 @if (Model.ShowRequestId)
 {
+    <!-- Verifica se o ID da requisição deve ser mostrado -->
+
     <p>
         <strong>Request ID:</strong> <code>@Model.RequestId</code>
+        <!-- Exibe o ID da requisição dentro de uma tag <code> para facilitar referência técnica -->
     </p>
 }
 
 <h3>Development Mode</h3>
+<!-- Subtítulo que introduz a secção de informações sobre o modo de desenvolvimento -->
+
 <p>
     Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
+    <!-- Explica que, ao mudar para o ambiente de Desenvolvimento, serão exibidas mais informações técnicas sobre o erro -->
 </p>
+
 <p>
     <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
+    <!-- Alerta que o ambiente de Desenvolvimento não deve estar ativo em produção -->
     It can result in displaying sensitive information from exceptions to end users.
+    <!-- Explica o risco de expor informações sensíveis ao utilizador final -->
     For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
     and restarting the app.
+    <!-- Instruções de como ativar o modo de Desenvolvimento localmente (através da variável de ambiente ASPNETCORE_ENVIRONMENT) -->
 </p>

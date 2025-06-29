@@ -1,44 +1,62 @@
-﻿@model GeoEspectro.Models.Utilizadores
+﻿@* Define o modelo desta vista como um objeto Utilizadores *@
+@model GeoEspectro.Models.Utilizadores
 
+@* Bloco para definir metadados da página *@
 @{
+    @* Título da página que será usado no layout *@
     ViewData["Title"] = "Apagar Utilizador";
 }
 
+@* Título principal da página com estilo de perigo (vermelho) *@
 <h1 class="mb-4 text-danger">Confirmação de Apagamento</h1>
 
+@* Container principal com sistema de grid do Bootstrap *@
 <div class="row justify-content-center">
     <div class="col-md-8">
+        @* Alert box de aviso sobre a ação destrutiva *@
         <div class="alert alert-warning shadow-sm">
             <h5>Tens a certeza que queres apagar este utilizador?</h5>
         </div>
 
+        @* Card que mostra os detalhes do utilizador a ser apagado *@
         <div class="card shadow-sm mb-4">
             <div class="card-body">
+                @* Lista de definição (dl) para mostrar os detalhes *@
                 <dl class="row mb-0">
+                    @* Nome do utilizador *@
                     <dt class="col-sm-4">Nome</dt>
                     <dd class="col-sm-8">@Model.Nome</dd>
 
+                    @* Morada do utilizador *@
                     <dt class="col-sm-4">Morada</dt>
                     <dd class="col-sm-8">@Model.Morada</dd>
 
+                    @* Código Postal do utilizador *@
                     <dt class="col-sm-4">Código Postal</dt>
                     <dd class="col-sm-8">@Model.CodPostal</dd>
 
+                    @* País do utilizador *@
                     <dt class="col-sm-4">País</dt>
                     <dd class="col-sm-8">@Model.Pais</dd>
 
+                    @* NIF do utilizador *@
                     <dt class="col-sm-4">NIF</dt>
                     <dd class="col-sm-8">@Model.Nif</dd>
 
+                    @* Telemóvel do utilizador *@
                     <dt class="col-sm-4">Telemóvel</dt>
                     <dd class="col-sm-8">@Model.Telemovel</dd>
                 </dl>
             </div>
         </div>
 
+        @* Formulário para confirmar o apagamento *@
         <form asp-action="Delete" method="post" class="d-flex justify-content-between">
+            @* Campo oculto com o ID do utilizador para segurança *@
             <input type="hidden" asp-for="ID" />
+            @* Botão de confirmação de apagamento (vermelho) *@
             <button type="submit" class="btn btn-danger">Apagar</button>
+            @* Botão para cancelar a ação *@
             <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
