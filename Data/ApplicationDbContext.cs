@@ -7,9 +7,7 @@ namespace GeoEspectro.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
+            : base(options) { }
 
         public DbSet<Utilizadores> Utilizadores { get; set; }
         public DbSet<Artigos> Artigos { get; set; }
@@ -20,12 +18,11 @@ namespace GeoEspectro.Data
         {
             base.OnModelCreating(builder);
 
-            // Relacionamento Utilizadores -> ApplicationUser
             builder.Entity<Utilizadores>()
-                   .HasOne(u => u.IdentityUser)
-                   .WithOne()
-                   .HasForeignKey<Utilizadores>(u => u.IdentityUserId)
-                   .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(u => u.IdentityUser)
+                .WithOne()
+                .HasForeignKey<Utilizadores>(u => u.IdentityUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

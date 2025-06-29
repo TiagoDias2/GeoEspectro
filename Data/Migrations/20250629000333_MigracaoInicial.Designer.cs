@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeoEspectro.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250628232119_MigracaoInicial")]
+    [Migration("20250629000333_MigracaoInicial")]
     partial class MigracaoInicial
     {
         /// <inheritdoc />
