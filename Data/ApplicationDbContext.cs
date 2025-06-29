@@ -20,18 +20,23 @@ namespace GeoEspectro.Data
         {
             base.OnModelCreating(builder);
 
-
             builder.Entity<Utilizadores>()
                 .HasOne(u => u.IdentityUser)
                 .WithOne()
                 .HasForeignKey<Utilizadores>(u => u.IdentityUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Relacionamento Utilizadores -> Artigos (1:N)
+            // Index para performance (ok)
             builder.Entity<Artigos>()
-            .HasIndex(a => a.AutorFK);
+                .HasIndex(a => a.AutorFK);
 
-
+            // Corrigir relação para evitar múltiplos cascades
+            builder.Entity<Artigos>()
+                .HasOne(a => a.Autor)
+                .WithMany(u => u.ListaArtigos)
+                .HasForeignKey(a => a.AutorFK)
+                .OnDelete(DeleteBehavior.Restrict); // ou .NoAction
         }
+
     }
 }
