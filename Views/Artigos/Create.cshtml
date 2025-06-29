@@ -22,14 +22,6 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="UtilizadorFK" class="form-label fw-bold">Autor</label>
-                <select asp-for="UtilizadorFK" asp-items="Model.ListaUtilizadores" class="form-select">
-                    <option value="">-- Selecione um utilizador --</option>
-                </select>
-                <span asp-validation-for="UtilizadorFK" class="text-danger small"></span>
-            </div>
-
-            <div class="mb-3">
                 <label asp-for="ListaCategoriasSelecionadas" class="form-label fw-bold">Categorias</label>
                 <select asp-for="ListaCategoriasSelecionadas" asp-items="Model.ListaCategorias" class="form-select" multiple>
                 </select>
