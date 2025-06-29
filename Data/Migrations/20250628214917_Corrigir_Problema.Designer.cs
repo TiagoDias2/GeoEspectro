@@ -4,6 +4,7 @@ using GeoEspectro.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeoEspectro.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250628214917_Corrigir_Problema")]
+    partial class Corrigir_Problema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace GeoEspectro.Data.Migrations
 
                     b.HasIndex("ListaCategoriasId");
 
-                    b.ToTable("ArtigosCategorias", (string)null);
+                    b.ToTable("ArtigosCategorias");
                 });
 
             modelBuilder.Entity("ArtigosRecursos", b =>
@@ -49,7 +52,7 @@ namespace GeoEspectro.Data.Migrations
 
                     b.HasIndex("ListaRecursosId");
 
-                    b.ToTable("ArtigosRecursos", (string)null);
+                    b.ToTable("ArtigosRecursos");
                 });
 
             modelBuilder.Entity("ArtigosUtilizadores", b =>
@@ -64,7 +67,7 @@ namespace GeoEspectro.Data.Migrations
 
                     b.HasIndex("ListaUtilizadosID");
 
-                    b.ToTable("ArtigosUtilizadores", (string)null);
+                    b.ToTable("ArtigosUtilizadores");
                 });
 
             modelBuilder.Entity("GeoEspectro.Data.ApplicationUser", b =>
@@ -157,7 +160,7 @@ namespace GeoEspectro.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Artigos", (string)null);
+                    b.ToTable("Artigos");
                 });
 
             modelBuilder.Entity("GeoEspectro.Models.Categorias", b =>
@@ -175,7 +178,7 @@ namespace GeoEspectro.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categorias", (string)null);
+                    b.ToTable("Categorias");
                 });
 
             modelBuilder.Entity("GeoEspectro.Models.Gostos", b =>
@@ -193,7 +196,7 @@ namespace GeoEspectro.Data.Migrations
 
                     b.HasIndex("ArtigoFK");
 
-                    b.ToTable("Gostos", (string)null);
+                    b.ToTable("Gostos");
                 });
 
             modelBuilder.Entity("GeoEspectro.Models.Recursos", b =>
@@ -230,7 +233,7 @@ namespace GeoEspectro.Data.Migrations
 
                     b.HasIndex("UtilizadorFK");
 
-                    b.ToTable("Recursos", (string)null);
+                    b.ToTable("Recursos");
                 });
 
             modelBuilder.Entity("GeoEspectro.Models.Utilizadores", b =>
@@ -287,7 +290,6 @@ namespace GeoEspectro.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Utilizadores");
-
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using GeoEspectro.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,48 +13,53 @@ namespace GeoEspectro.Models
         /// </summary>
         [Key]
         public int Id { get; set; }
+
         /// <summary>
         /// Titulo do artigo
         /// </summary>
-        public string Titulo { get; set; }
+        [Display(Name = "Título")]
+        [StringLength(120)]
+        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório.")]
+        public string Titulo { get; set; } = "";
+
         /// <summary>
-        /// Fotografia associada ao artigo
+        /// Conteúdo do artigo
         /// </summary>
-        public string Fotografia { get; set; }
-        /// <summary>
-        /// Conteudo do artigo
-        /// </summary>
-        public string Texto { get; set; }
+        public string Texto { get; set; } = "";
+
         /// <summary>
         /// Data de publicação do artigo
         /// </summary>
         [Display(Name = "Data")]
-        [DataType(DataType.Date)] // transforma o atributo, na BD, em 'Date'
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}",
-                     ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "A {0} é de preenchimento obrigatório")]
         public DateTime Data { get; set; }
 
-        // Relacionamentos M - N
+        /// <summary>
+        /// Chave estrangeira para o autor do artigo
+        /// </summary>
+        [ForeignKey(nameof(Autor))]
+        public int AutorFK { get; set; }
 
         /// <summary>
-        /// Lista de todas as categorias
+        /// Autor do artigo
         /// </summary>
-        public ICollection<Categorias> ListaCategorias { get; set; }
+        public Utilizadores Autor { get; set; } = null!;
 
         /// <summary>
-        /// Lista de todos os artigos
+        /// Lista de todas as categorias associadas
         /// </summary>
-        public ICollection<Gostos> ListaGostos { get; set; }
+        public ICollection<ArtigosCategoria> ListaCategorias { get; set; } = [];
 
         /// <summary>
-        /// Lista dos artigos que compõem os Recursos
+        /// Lista de gostos associados a este artigo
         /// </summary>
-        public ICollection<Recursos> ListaRecursos { get; set; }
+        public ICollection<Gostos> ListaGostos { get; set; } = [];
 
         /// <summary>
-        /// Lista de utilizadores associados aos artigos
+        /// Lista de recursos multimédia associados
         /// </summary>
-        public ICollection<Utilizadores> ListaUtilizados { get; set; }
+        public ICollection<Detalhes> ListaRecursos { get; set; } = [];
     }
 }

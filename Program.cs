@@ -1,6 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using GeoEspectro.Data;
+using Microsoft.AspNetCore.Http.Features;
+using System.Text.Json.Serialization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using GeoEspectro.Services;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,12 +21,80 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 20 * 1024 * 1024; //20MB
+});
+
+// Eliminar a proteção de 'ciclos' qd se faz uma pesquisa que envolva um relacionamento 1-N em Linq
+// https://code-maze.com/aspnetcore-handling-circular-references-when-working-with-json/
+// https://marcionizzola.medium.com/como-resolver-jsonexception-a-possible-object-cycle-was-detected-27e830ea78e5
+builder.Services.AddControllers()
+                .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+// *******************************************************************
+// Instalar o package
+// Microsoft.AspNetCore.Authentication.JwtBearer
+//
+// using Microsoft.IdentityModel.Tokens;
+// *******************************************************************
+// JWT Settings
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
+builder.Services.AddAuthentication(options => { })
+   .AddCookie("Cookies", options => {
+       options.LoginPath = "/Identity/Account/Login";
+       options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+   })
+   .AddJwtBearer("Bearer", options => {
+       options.TokenValidationParameters = new TokenValidationParameters
+       {
+           ValidateIssuer = true,
+           ValidateAudience = true,
+           ValidateLifetime = true,
+           ValidateIssuerSigningKey = true,
+           ValidIssuer = jwtSettings["Issuer"],
+           ValidAudience = jwtSettings["Audience"],
+           IssuerSigningKey = new SymmetricSecurityKey(key)
+       };
+   });
+
+// declarar o serviço Signal R
+builder.Services.AddSignalR();
+
+// configuração do JWT
+builder.Services.AddScoped<TokenService>();
+
+// Adiciona o Swagger
+// builder.Services.AddEndpointsApiExplorer();   // necessária apenas para APIs mínimas. 
+// builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c => {
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Minha API de gestão de Artigos de Investigação",
+        Version = "v1",
+        Description = "API para gestão de categorias, recursos multimédia associados aos artigos publicados"
+    });
+
+    // Caminho para o XML gerado
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+
+    // inciar o 'midleware' do Swagger
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
@@ -36,6 +111,10 @@ app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+// cria uma 'ponte' entre o nosso serviço SignalR (GostosHub)
+// e o javascript do browser
+app.MapHub<GostosHub>("/gostoshub");
 
 app.MapControllerRoute(
     name: "default",

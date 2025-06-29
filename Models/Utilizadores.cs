@@ -1,12 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using GeoEspectro.Data;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace GeoEspectro.Models
 {
+    /// <summary>
+    /// Utilizadores não anónimos da aplicação 
+    /// </summary>
     public class Utilizadores
     {
+        /// <summary>
+        /// Identificador da classe do utilizador
+        /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
@@ -30,21 +36,32 @@ namespace GeoEspectro.Models
         [StringLength(50)]
         public string Pais { get; set; }
 
+        /// <summary>
+        /// Número de Identificação Fiscal
+        /// </summary>
         [Display(Name = "NIF")]
         [StringLength(9)]
-        [RegularExpression("[1-9][0-9]{8}", ErrorMessage = "Deve escrever apenas 9 digitos no {0}")]
-        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
+        [RegularExpression("[0-9]{9}", ErrorMessage = "O {0} deve conter exatamente 9 dígitos.")]
         public string Nif { get; set; }
 
+        /// <summary>
+        /// Número de Telemóvel
+        /// </summary>
         [Display(Name = "Telemóvel")]
         [StringLength(18)]
-        [RegularExpression("(([+]|00)[0-9]{1,5})?[1-9][0-9]{5,10}", ErrorMessage = "Escreva um nº de telefone. Pode adicionar indicativo do país.")]
+        [RegularExpression(@"9[1236][0-9]{7}", ErrorMessage = "O número de telemóvel deve ser válido.")]
         public string Telemovel { get; set; }
 
+        /// <summary>
+        /// Nome de utilizador (ligação à autenticação)
+        /// </summary>
         [StringLength(50)]
-        public string UserName { get; set; } = string.Empty;
+        [Display(Name = "Username")]
+        public string UserName { get; set; }
 
-        // 🔗 Chave estrangeira para AspNetUsers
+        /// <summary>
+        /// Chave estrangeira para ApplicationUser
+        /// </summary>
         [Required]
         [StringLength(450)]
         public string IdentityUserId { get; set; }
@@ -52,8 +69,9 @@ namespace GeoEspectro.Models
         [ForeignKey("IdentityUserId")]
         public ApplicationUser IdentityUser { get; set; }
 
-        public ICollection<Gostos> ListaGostos { get; set; }
-        public ICollection<Recursos> ListaRecursos { get; set; }
-        public ICollection<Artigos> ListaArtigos { get; set; }
+        // Relacionamentos
+        public ICollection<Artigos> ListaArtigos { get; set; } = [];
+        public ICollection<Recursos> ListaRecursos { get; set; } = [];
+        public ICollection<Gostos> ListaGostos { get; set; } = [];
     }
 }

@@ -4,6 +4,7 @@ using GeoEspectro.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeoEspectro.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250628183435_InicialRelacionamento")]
+    partial class InicialRelacionamento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,51 +24,6 @@ namespace GeoEspectro.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ArtigosCategorias", b =>
-                {
-                    b.Property<int>("ListaArtigosId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ListaCategoriasId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ListaArtigosId", "ListaCategoriasId");
-
-                    b.HasIndex("ListaCategoriasId");
-
-                    b.ToTable("ArtigosCategorias", (string)null);
-                });
-
-            modelBuilder.Entity("ArtigosRecursos", b =>
-                {
-                    b.Property<int>("ListaArtigosId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ListaRecursosId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ListaArtigosId", "ListaRecursosId");
-
-                    b.HasIndex("ListaRecursosId");
-
-                    b.ToTable("ArtigosRecursos", (string)null);
-                });
-
-            modelBuilder.Entity("ArtigosUtilizadores", b =>
-                {
-                    b.Property<int>("ListaArtigosId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ListaUtilizadosID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ListaArtigosId", "ListaUtilizadosID");
-
-                    b.HasIndex("ListaUtilizadosID");
-
-                    b.ToTable("ArtigosUtilizadores", (string)null);
-                });
 
             modelBuilder.Entity("GeoEspectro.Data.ApplicationUser", b =>
                 {
@@ -119,6 +77,12 @@ namespace GeoEspectro.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int?>("UtilizadoresID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UtilizadoresID1")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -128,6 +92,14 @@ namespace GeoEspectro.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("UtilizadoresID")
+                        .IsUnique()
+                        .HasFilter("[UtilizadoresID] IS NOT NULL");
+
+                    b.HasIndex("UtilizadoresID1")
+                        .IsUnique()
+                        .HasFilter("[UtilizadoresID1] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -140,24 +112,40 @@ namespace GeoEspectro.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AutorFK")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Fotografia")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Texto")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Artigos", (string)null);
+                    b.HasIndex("AutorFK");
+
+                    b.ToTable("Artigos");
+                });
+
+            modelBuilder.Entity("GeoEspectro.Models.ArtigosCategoria", b =>
+                {
+                    b.Property<int>("ArtigosId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ArtigosId", "CategoriaId");
+
+                    b.HasIndex("CategoriaId");
+
+                    b.ToTable("ArtigosCategoria");
                 });
 
             modelBuilder.Entity("GeoEspectro.Models.Categorias", b =>
@@ -175,7 +163,25 @@ namespace GeoEspectro.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categorias", (string)null);
+                    b.ToTable("Categorias");
+                });
+
+            modelBuilder.Entity("GeoEspectro.Models.Detalhes", b =>
+                {
+                    b.Property<int>("RecursoFK")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ArtigoFK")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Principal")
+                        .HasColumnType("bit");
+
+                    b.HasKey("RecursoFK", "ArtigoFK");
+
+                    b.HasIndex("ArtigoFK");
+
+                    b.ToTable("Detalhes");
                 });
 
             modelBuilder.Entity("GeoEspectro.Models.Gostos", b =>
@@ -193,7 +199,7 @@ namespace GeoEspectro.Data.Migrations
 
                     b.HasIndex("ArtigoFK");
 
-                    b.ToTable("Gostos", (string)null);
+                    b.ToTable("Gostos");
                 });
 
             modelBuilder.Entity("GeoEspectro.Models.Recursos", b =>
@@ -204,33 +210,32 @@ namespace GeoEspectro.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AutorFK")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Ficheiro")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Local")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Observacao")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Tipo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UtilizadorFK")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UtilizadorFK");
+                    b.HasIndex("AutorFK");
 
-                    b.ToTable("Recursos", (string)null);
+                    b.ToTable("Recursos");
                 });
 
             modelBuilder.Entity("GeoEspectro.Models.Utilizadores", b =>
@@ -242,22 +247,14 @@ namespace GeoEspectro.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("CodPostal")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("IdentityUserId")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Morada")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Nif")
-                        .IsRequired()
                         .HasMaxLength(9)
                         .HasColumnType("nvarchar(9)");
 
@@ -267,27 +264,20 @@ namespace GeoEspectro.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Pais")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Telemovel")
-                        .IsRequired()
                         .HasMaxLength(18)
                         .HasColumnType("nvarchar(18)");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("IdentityUserId")
-                        .IsUnique();
-
                     b.ToTable("Utilizadores");
-
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -427,49 +417,67 @@ namespace GeoEspectro.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ArtigosCategorias", b =>
+            modelBuilder.Entity("GeoEspectro.Data.ApplicationUser", b =>
                 {
-                    b.HasOne("GeoEspectro.Models.Artigos", null)
-                        .WithMany()
-                        .HasForeignKey("ListaArtigosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GeoEspectro.Models.Categorias", null)
-                        .WithMany()
-                        .HasForeignKey("ListaCategoriasId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ArtigosRecursos", b =>
-                {
-                    b.HasOne("GeoEspectro.Models.Artigos", null)
-                        .WithMany()
-                        .HasForeignKey("ListaArtigosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GeoEspectro.Models.Recursos", null)
-                        .WithMany()
-                        .HasForeignKey("ListaRecursosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ArtigosUtilizadores", b =>
-                {
-                    b.HasOne("GeoEspectro.Models.Artigos", null)
-                        .WithMany()
-                        .HasForeignKey("ListaArtigosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("GeoEspectro.Models.Utilizadores", "Utilizador")
+                        .WithOne()
+                        .HasForeignKey("GeoEspectro.Data.ApplicationUser", "UtilizadoresID")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GeoEspectro.Models.Utilizadores", null)
-                        .WithMany()
-                        .HasForeignKey("ListaUtilizadosID")
+                        .WithOne("ApplicationUser")
+                        .HasForeignKey("GeoEspectro.Data.ApplicationUser", "UtilizadoresID1");
+
+                    b.Navigation("Utilizador");
+                });
+
+            modelBuilder.Entity("GeoEspectro.Models.Artigos", b =>
+                {
+                    b.HasOne("GeoEspectro.Models.Utilizadores", "Autor")
+                        .WithMany("ListaArtigos")
+                        .HasForeignKey("AutorFK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Autor");
+                });
+
+            modelBuilder.Entity("GeoEspectro.Models.ArtigosCategoria", b =>
+                {
+                    b.HasOne("GeoEspectro.Models.Artigos", "Artigos")
+                        .WithMany("ListaCategorias")
+                        .HasForeignKey("ArtigosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GeoEspectro.Models.Categorias", "Categoria")
+                        .WithMany("ListaArtigos")
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Artigos");
+
+                    b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("GeoEspectro.Models.Detalhes", b =>
+                {
+                    b.HasOne("GeoEspectro.Models.Artigos", "Artigo")
+                        .WithMany("ListaRecursos")
+                        .HasForeignKey("ArtigoFK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GeoEspectro.Models.Recursos", "Recurso")
+                        .WithMany("ListaArtigos")
+                        .HasForeignKey("RecursoFK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Artigo");
+
+                    b.Navigation("Recurso");
                 });
 
             modelBuilder.Entity("GeoEspectro.Models.Gostos", b =>
@@ -493,24 +501,13 @@ namespace GeoEspectro.Data.Migrations
 
             modelBuilder.Entity("GeoEspectro.Models.Recursos", b =>
                 {
-                    b.HasOne("GeoEspectro.Models.Utilizadores", "Utilizador")
+                    b.HasOne("GeoEspectro.Models.Utilizadores", "Autor")
                         .WithMany("ListaRecursos")
-                        .HasForeignKey("UtilizadorFK")
+                        .HasForeignKey("AutorFK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Utilizador");
-                });
-
-            modelBuilder.Entity("GeoEspectro.Models.Utilizadores", b =>
-                {
-                    b.HasOne("GeoEspectro.Data.ApplicationUser", "IdentityUser")
-                        .WithOne()
-                        .HasForeignKey("GeoEspectro.Models.Utilizadores", "IdentityUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("IdentityUser");
+                    b.Navigation("Autor");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -566,11 +563,29 @@ namespace GeoEspectro.Data.Migrations
 
             modelBuilder.Entity("GeoEspectro.Models.Artigos", b =>
                 {
+                    b.Navigation("ListaCategorias");
+
                     b.Navigation("ListaGostos");
+
+                    b.Navigation("ListaRecursos");
+                });
+
+            modelBuilder.Entity("GeoEspectro.Models.Categorias", b =>
+                {
+                    b.Navigation("ListaArtigos");
+                });
+
+            modelBuilder.Entity("GeoEspectro.Models.Recursos", b =>
+                {
+                    b.Navigation("ListaArtigos");
                 });
 
             modelBuilder.Entity("GeoEspectro.Models.Utilizadores", b =>
                 {
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("ListaArtigos");
+
                     b.Navigation("ListaGostos");
 
                     b.Navigation("ListaRecursos");

@@ -22,17 +22,17 @@ namespace GeoEspectro.Models
         /// <summary>
         /// ForeignKey para referenciar o utilizador que gosta do artigo
         /// </summary>
-        public Utilizadores Utilizador { get; set; }
+        public Utilizadores Utilizador { get; set; } = null!;
 
         /// <summary>
         /// ForeignKey para o artigo que o utilizador gostou
         /// </summary>
         [ForeignKey(nameof(Artigo))]
         public int ArtigoFK { get; set; }
-   
+
         /// <summary>
         /// ForeignKey para o artigo que o utilizador gostou
         /// </summary>
-        public Artigos Artigo { get; set; }
+        public Artigos Artigo { get; set; } = null!;
     }
 }
